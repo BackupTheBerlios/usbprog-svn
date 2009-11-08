@@ -1,3 +1,9 @@
+2009-11-08  Bernhard Walle <bernhard@bwalle.de>
+
+	* Replace email address (bernhard.walle@gmx.de -> bernhard@bwalle.de)
+	  in all dialogs and source files.
+	* Update Copyright date to 2009.
+
 2009-04-04  Bernhard Walle <bernhard@bwalle.de>
 
 	* Fix GUI on MacOS X (contributed by Nabil Sayegh)

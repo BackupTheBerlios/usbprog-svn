@@ -1,5 +1,5 @@
 /*
- * (c) 2007-2008, Robert Schilling
+ * (c) 2007-2009, Robert Schilling
  *                Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
