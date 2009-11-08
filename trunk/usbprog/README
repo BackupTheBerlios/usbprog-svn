@@ -82,7 +82,7 @@ This tool
 
 7. Author, Copyright, Bugs
 
-   This tool was written by Bernhard Walle <bernhard.walle@gmx.de>. Parts of
+   This tool was written by Bernhard Walle <bernhard@bwalle.de>. Parts of
    the source code have been taken from the old tool which was written by
    Benedikt Sauter <sauter@ixbat.de>.
 
@@ -90,5 +90,5 @@ This tool
 
    Please report bugs to the usbprog mailing list
    <https://lists.berlios.de/mailman/listinfo/usbprog-pub>, per private mail
-   <bernhard.walle@gmx.de> or the forum <http://forum.embedded-projects.net>.
+   <bernhard@bwalle.de> or the forum <http://forum.embedded-projects.net>.
 

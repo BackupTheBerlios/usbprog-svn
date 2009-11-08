@@ -1,5 +1,5 @@
 /*
- * (c) 2007-2008, Bernhard Walle <bernhard.walle@gmx.de>
+ * (c) 2007-2008, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ void IniFile::readFile() throw (IOError)
     string line;
 
     while ( getline(file, line) ) {
-        size_t equal = line.find("="); 
+        size_t equal = line.find("=");
         if (line.find("#") == 0 || equal == string::npos)
             continue;
 

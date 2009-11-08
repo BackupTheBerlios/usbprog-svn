@@ -38,7 +38,7 @@ Enable some debugging output.
 =head1 AUTHOR
 
 The USBprog program and documentation has been written by Bernhard Walle
-E<lt>bernhard.walle@gmx.deE<gt>.
+E<lt>bernhard@bwalle.deE<gt>.
 
 =head1 SEE ALSO
 

@@ -1,6 +1,6 @@
 /*
  * (c) 2007-2008, Robert Schilling
- *                Bernhard Walle <bernhard.walle@gmx.de>
+ *                Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,7 +332,7 @@ void usbprogFrm::aboutMenuHandler(wxCommandEvent &evt)
 {
     wxMessageDialog dlg(this,
             wxT("USBprog " USBPROG_VERSION_STRING "\n"
-                "(c) 2007, Bernhard Walle <bernhard.walle@gmx.de>\n"
+                "(c) 2007, Bernhard Walle <bernhard@bwalle.de>\n"
                 "http://www.embedded-projects.net/usbprog"),
             wxT("About ..."),
             wxOK | wxICON_INFORMATION);

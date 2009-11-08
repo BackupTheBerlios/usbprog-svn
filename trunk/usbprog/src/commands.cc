@@ -1,5 +1,5 @@
 /*
- * (c) 2007-2008, Bernhard Walle <bernhard.walle@gmx.de>
+ * (c) 2007-2008, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -983,7 +983,7 @@ bool CopyingCommand::execute(CommandArgVector   args,
     throw (ApplicationError)
 {
     os << "USBprog " << USBPROG_VERSION_STRING << endl;
-    os << "Copyright (c) 2007, 2008 Bernhard Walle <bernhard.walle@gmx.de>\n\n";
+    os << "Copyright (c) 2007, 2008 Bernhard Walle <bernhard@bwalle.de>\n\n";
     os << "This program is free software: you can redistribute it and/or modify\n"
        << "it under the terms of the GNU General Public License as published by\n"
        << "the Free Software Foundation, either version 2 of the License, or\n"
