@@ -219,7 +219,7 @@ SectionEnd
 
 Section "LibUSB" SEC02
   SetOutPath "$INSTDIR"
-  File "libusb-win32-filter-bin-0.1.12.1.exe"
+  File "libusb-win32-filter-bin-0.1.12.2.exe"
   ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   !insertmacro MUI_STARTMENU_WRITE_END
@@ -252,8 +252,8 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function libusb
- IfFileExists "$INSTDIR\libusb-win32-filter-bin-0.1.12.1.exe" 0 NO_LIB
-      Exec "$INSTDIR\libusb-win32-filter-bin-0.1.12.1.exe"
+ IfFileExists "$INSTDIR\libusb-win32-filter-bin-0.1.12.2.exe" 0 NO_LIB
+      Exec "$INSTDIR\libusb-win32-filter-bin-0.1.12.2.exe"
    NO_LIB:
 FunctionEnd
 
@@ -272,7 +272,7 @@ Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\libusb-win32-filter-bin-0.1.12.1.exe"
+  Delete "$INSTDIR\libusb-win32-filter-bin-0.1.12.2.exe"
  ; Delete "$WINDIR\system32\drivers\libusb0.sys"
  ; Delete "$WINDIR\system32\libusb0.dll"
  ; Delete "$WINDIR\inf\usbprog_x64.cat"
