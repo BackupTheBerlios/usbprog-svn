@@ -1,3 +1,7 @@
+2009-11-29  Bernhard Walle <bernhard@bwalle.de>
+
+	* Update libusb on Win32 to version 0.1.12.2.
+
 2009-11-08  Bernhard Walle <bernhard@bwalle.de>
 
 	* Replace email address (bernhard.walle@gmx.de -> bernhard@bwalle.de)
