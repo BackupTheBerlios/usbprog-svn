@@ -22,7 +22,11 @@
 set -x
 aclocal -I config
 autoheader
-libtoolize --copy
+if which glibtoolize >>/dev/null 2>&1 ; then
+    glibtoolize --copy
+else
+    glibtoolize --copy
+fi
 automake --foreign --add-missing --copy
 autoconf
 
