@@ -72,10 +72,6 @@ bool usbprogFrmApp::OnInit()
 {
     parse_command_line(argc, argv);
 
-    usbprogFrm* frame = new usbprogFrm(NULL);
-    frame->Show(true);
-    SetTopWindow(frame);
-
 #ifdef __APPLE__
     // this is necessary because of
     // http://wiki.wxwidgets.org/WxMac_Issues#My_app_can.27t_be_brought_to_the_front.21
@@ -83,6 +79,10 @@ bool usbprogFrmApp::OnInit()
     GetCurrentProcess(&PSN);
     TransformProcessType(&PSN, kProcessTransformToForegroundApplication);
 #endif
+
+    usbprogFrm* frame = new usbprogFrm(NULL);
+    frame->Show(true);
+    SetTopWindow(frame);
 
     return true;
 }
