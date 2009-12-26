@@ -3,6 +3,8 @@
 	* Fix the problem that the menu bar is not displayed on MacOS.
 	* Check for "glibtoolize" before running "libtoolize" to fix build
 	  after a fresh SVN checkout on MacOS.
+	* Use "/bin/echo -n" instead of "echo -n" because /bin/sh echo of
+	  MacOS doesn't support the "-n" argument.
 
 2009-11-29  Bernhard Walle <bernhard@bwalle.de>
 

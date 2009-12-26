@@ -141,14 +141,14 @@ echo
 echo "---------------------------------------------------"
 echo "           Build summary"
 echo "---------------------------------------------------"
-echo -n "Readline         : "
+/bin/echo -n "Readline         : "
 if test x"${ac_cv_lib_readline_readline}" = xyes ; then
     echo "enabled"
 else
     echo "disabled"
 fi
 
-echo -n "GUI (wxWidgets)  : "
+/bin/echo -n "GUI (wxWidgets)  : "
 if test x"${gui}" = xtrue ; then
     echo "enabled"
 else
