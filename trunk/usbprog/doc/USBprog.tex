@@ -5,7 +5,7 @@
 % \usepackage[osf]{libertine}
 % \usepackage{lmodern}
 \usepackage{cmbright}
-\usepackage[scaled=.95]{beramono}
+\usepackage[scaled=.90]{beramono}
 \usepackage{graphicx}
 \usepackage{varioref}
 \usepackage{xcolor}
@@ -169,13 +169,11 @@ If you have problems with the document here, there are several places where you 
 
 \chapter{Getting Started with the Hardware}
 
-
 \section{Connectors, Jumpers and LEDs}
 
 At first we have to introduce the jumpers, connectors and LEDs which we talk about in the next
 sections. All figures in that document are meant to be drawn in the same perspective (USB connector
 on the right) as figure \vref{fig:usbprog}.
-
 
 \begin{figure}[ht]
   \centering
@@ -183,7 +181,6 @@ on the right) as figure \vref{fig:usbprog}.
   \caption{The USBprog device (version 3.0) with all connectors, jumpers and LEDs}
   \label{fig:usbprog}
 \end{figure}
-
 
 \subsection{Connectors}
 \label{sec:connectors}
@@ -275,7 +272,18 @@ version with bootloader, please read section \vref{sec:check_if_bootloader_insta
 \subsection{Check if the Bootloader is Installed}
 \label{sec:check_if_bootloader_installed}
 
-% TODO
+To check if the device already contains a bootloader, just put the device into programming mode
+manually. For this step, you don't require any specific PC software. You just need a working USB
+port.
+
+\begin{enumerate}
+  \item Disconnect your USBprog from the computer if it's connected.
+  \item Close the jumper \texttt{JP1} as described in section \vref{sec:jumpers}.
+  \item Connect the USBprog to a USB port.
+\end{enumerate}
+
+If \texttt{LED1} (see figure \vref{fig:usbprog}) now blinks, everything is fine. If not, there's no
+working bootloader and you need to flash it.
 
 
 \subsection{Flashing the Bootloader}
