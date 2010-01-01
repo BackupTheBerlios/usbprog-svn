@@ -297,15 +297,30 @@ to use an already initialised USBprog with the ``AVRISP mk2 Clone'' firmware fla
 programmer for Atmel AVR microcontrollers will do it, too. You need the standardised \emph{ISP}
 interface.
 
-In the rest of the document we assume that you have already a USBprog and you want to initialised a
-second one. It should be easy to use that description for another programmer since the
-\emph{AVRdude} software supports basically every AVR programmer that is out there.
+We need not only a programmer but also a programming software. While there are plenty of programmers
+for Atmel AVR microcontrollers, we use \href{http://www.nongnu.org/avrdude/}{AVRdude} because it
+supports quite a lot of hardware devices and it's available on basically any platform that is around
+there. On Windows, we suggest to use \href{http://winavr.sourceforge.net/}{WinAVR} which is quite
+easy to install.
 
+\subsubsection{Setting the Jumpers}
 
+To program the microcontroller that is on the USBprog board, you have to connect jumper
+\texttt{JP1} as described in section \vref{sec:jumpers}.
 
+There are two possibilities how the programmer gets its power:
 
+\begin{enumerate}
+  \item The programmer has its own power supply. That is the case for every USB-based programmer
+    since USB can supply the device with up to 500~mA.
+  \item The programmer takes the power from the circuit that should be programmed. That is the case
+    for most ``self-made'' parallel port programmers since the parallel port is not able to supply
+    devices with power.
+\end{enumerate}
 
-
+If you have a device of the second category, you have to set the jumper \texttt{JP2} as described in
+section \vref{sec:jumpers} and shown in figure \vref{fig:jp3}. We suggest the 3rd method with the
+Schottky diode.
 
 
 % \bibliography{literatur}
