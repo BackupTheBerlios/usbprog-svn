@@ -1,9 +1,7 @@
-\documentclass[UKenglish,halfparskip,oneside,DIV12]{scrreprt}
+\documentclass[bibtotoc,UKenglish,halfparskip,oneside,DIV12]{scrreprt}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{babel}
-% \usepackage[osf]{libertine}
-% \usepackage{lmodern}
 \usepackage{cmbright}
 \usepackage{graphicx}
 \usepackage{varioref}
@@ -63,7 +61,9 @@
         pdfauthor={Bernhard Walle}]{hyperref}
 %%%%%%
 \urlstyle{sf}
-\setcounter{secnumdepth}{3}
+
+% This is the default.
+% \setcounter{secnumdepth}{2}
 
 \begin{document}
 
@@ -321,13 +321,81 @@ If you have a device of the second category, you have to set the jumper \texttt{
 section \vref{sec:jumpers} and shown in figure \vref{fig:jp3}. We suggest the 3rd method with the
 Schottky diode.
 
+\subsubsection{Wiring}
 
-% \bibliography{literatur}
+After the jumpers are right, connect the USBprog with a free USB port of your computer which is
+necessary to supply the USBprog with power. The green power LED (\texttt{LED1}, see section
+\vref{sec:leds}) indicates that everything is okay. If necessary connect your programmer with power
+and with your computer.
+
+For the connection between your programmer and your computer you need a 10-pole ribbon cable. The
+pin assignment is the standardised ISP interface as shown in table \vref{tab:isp}. The numbering
+scheme is shown in figure \vref{fig:isp}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|p{1cm}p{5cm}|p{1cm}p{5cm}|}
+    \hline
+    \textbf{Pin} & \textbf{Description} & \textbf{Pin} & \textbf{Description} \\
+    \hline
+    \hline
+    1            & MOSI (data out)       & 2            & VCC (+5~V)           \\
+    3            & --                    & 4            & GND (signal ground)  \\
+    5            & RESET                 & 6            & \verb+"+             \\
+    7            & SCK (clock)           & 8            & \verb+"+             \\
+    9            & MISO (instruction in) & 10           & \verb+"+             \\
+    \hline
+  \end{tabular}
+  \caption{ISP Pin Assignment}
+  \label{tab:isp}
+\end{table}
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics{images/isp}
+  \caption{Pin numbering used in the ISP pin assignment}
+  \label{fig:isp}
+\end{figure}
+
+\subsubsection{Flashing the Firmware}
+
+Now it's time to flash the firmware with AVRdude. At first you have to find out how your programmer
+is named in AVRdude which is listed in \cite{AVRdude} where the \texttt{-c} option is described.
+This symbolic name is spelled as \texttt{PROGRAMMER} in the commands below.
+
+At first you have to download the firmware file at
+\url{http://svn.berlios.de/svnroot/repos/usbprog/trunk/usbprog\_base/firmware/usbprog\_base.hex}.
+Save the file as \texttt{usbprog\_base.hex}.
+
+Now flash the firmware with the command
+
+\begin{lstlisting}[style=inline]
+% avrdude -p m32 -c PROGRAMMER -U flash:w:usbprog_base.hex
+\end{lstlisting}
+
+The second step requires to set the fuse bits with following interactive AVRdude session:
+
+\begin{lstlisting}[style=inline]
+% avrdude -p m32 -c PROGRAMMER -t
+avrdude> write lfuse 0 0xe0
+avrdude> write hfuse 0 0xd8
+avrdude> quit
+\end{lstlisting}
+
+After everything was successful, disconnect the USBprog, remove the jumper \texttt{JP1} and connect
+the USBprog again. The red LED blinks now. This is a sign that you're ready to upload a firmware
+which is described in section \vref{sec:firstfirmware}---just the next section!
+
+\section{Upload the First Firmware}
+\label{sec:firstfirmware}
+
+
 \bibliographystyle{IEEEtran}
 
-% \begin{thebibliography}{999999}
-%   \bibitem[bla]{fasel} df
-% \end{thebibliography}
+\begin{thebibliography}{99}
+  \bibitem{AVRdude} AVRDUDE Manual,
+    \url{http://www.nongnu.org/avrdude/user-manual/avrdude.html}
+\end{thebibliography}
 
 
 \end{document}
