@@ -5,7 +5,6 @@
 % \usepackage[osf]{libertine}
 % \usepackage{lmodern}
 \usepackage{cmbright}
-\usepackage[scaled=.90]{beramono}
 \usepackage{graphicx}
 \usepackage{varioref}
 \usepackage{xcolor}
@@ -186,13 +185,13 @@ on the right) as figure \vref{fig:usbprog}.
 \label{sec:connectors}
 
 \begin{description}
-  \item[\texttt{CONN1}] is the output interface which is used to do something useful with the
-    USBprog beside from blinking LEDs. For example if you use the \emph{avrispmk2} firmware, this is
-    an ISP interface which is used to program microcontrollers.
+  \item[CONN1] is the output interface which is used to do something useful with the USBprog beside
+    from blinking LEDs. For example if you use the \emph{avrispmk2} firmware, this is an ISP
+    interface which is used to program microcontrollers.
 
-  \item[\texttt{CONN2}] is obviously the USB connector which is used to connect
-    your USBprog to the computer. You have to use a \emph{Type B} cable which is the normal cable to
-    connect USB devices---apart from micro or mini USB.
+  \item[CONN2] is obviously the USB connector which is used to connect your USBprog to the computer.
+    You have to use a \emph{Type B} cable which is the normal cable to connect USB devices---apart
+    from micro or mini USB.
 \end{description}
 
 
@@ -200,12 +199,12 @@ on the right) as figure \vref{fig:usbprog}.
 \label{sec:jumpers}
 
 \begin{description}
-  \item[\texttt{JP1}] (the lower two of the four pins) is the jumper that must be connected if
-    the bootloader of the USBprog should be updated. See also section \vref{sec:inithardware} how to
-    flash the bootloader.
+  \item[JP1] (the lower two of the four pins) is the jumper that must be connected if the bootloader
+    of the USBprog should be updated. See also section \vref{sec:inithardware} how to flash the
+    bootloader.
 
-  \item[\texttt{JP2}] controls how the power supply of the circuit that should be programmed
-    (connected to \texttt{CONN1}). Figure \vref{fig:jp2} shows the possible connections:
+  \item[JP2] controls how the power supply of the circuit that should be programmed (connected to
+    \texttt{CONN1}). Figure \vref{fig:jp2} shows the possible connections:
 
     The default is no power supply for the programmed circuit. In that case you must ensure that the
     device is supplied with power by other means. This is the safest possibility.
@@ -217,20 +216,20 @@ on the right) as figure \vref{fig:usbprog}.
     An alternative is the setting of the two leftmost pins: In that case, the 5~V VCC is not
     directly from the USB port but with a Schottky diode. This is safer than the direct connection.
 
-  \item[\texttt{JP3}] has two functions: At first it can be used as 5~V serial interface for
-    debugging. You cannot directly connect this jumper to the computer but you need some level
-    converter in between\footnote{If you want to build such a level converter yourself, look for
-    example at \url{http://www.nslu2-linux.org/wiki/HowTo/AddASerialPort}. If you want to buy such a
-    cable in Germany, the \href{http://www.eproo.net}{Embedded Project Shop} also has
-    one. Look for ``FTDI-Kabel TTL-232R USB zu TTL serielles Kabel (5.0 V)''.}. This functionality
-    is only needed by firmware developers.
+  \item[JP3] has two functions: At first it can be used as 5~V serial interface for debugging. You
+    cannot directly connect this jumper to the computer but you need some level converter in
+    between\footnote{If you want to build such a level converter yourself, look for example at
+    \url{http://www.nslu2-linux.org/wiki/HowTo/AddASerialPort}. If you want to buy such a cable in
+    Germany, the \href{http://www.eproo.net}{Embedded Project Shop} also has one. Look for
+    ``FTDI-Kabel TTL-232R USB zu TTL serielles Kabel (5.0 V)''.}. This functionality is only needed
+    by firmware developers.
 
     More important is another function which is used by the bootloader at startup. To put the device
     in update mode, disconnect the device, then connect pins 2 and 3 as shown in figure
     \vref{fig:jp3} and connect the device again.
 
-  \item[\texttt{JP4}] is application specific, i.\,e. used directly by the firmware that is flashed
-    into the USBprog. Currently, \texttt{JP4} is not used by any of the public firmwares.
+  \item[JP4] is application specific, i.\,e. used directly by the firmware that is flashed into the
+    USBprog. Currently, \texttt{JP4} is not used by any of the public firmwares.
 \end{description}
 
 \begin{figure}[thb]
@@ -252,12 +251,12 @@ on the right) as figure \vref{fig:usbprog}.
 \label{sec:leds}
 
 \begin{description}
-  \item[\texttt{LED1} (red)] is used by the firmware. There are two common scenarios:
+  \item[LED1 (red)] is used by the firmware. There are two common scenarios:
 
     If the USBprog is in \emph{update mode,} the LED blinks slowly. In the wide-spread Atmel MTK II
     clone firmware, this LED shines while the programming of the microcontroller is ongoing.
 
-  \item[\texttt{LED2} (green)] is just the Power LED.
+  \item[LED2 (green)] is just the Power LED.
 \end{description}
 
 
