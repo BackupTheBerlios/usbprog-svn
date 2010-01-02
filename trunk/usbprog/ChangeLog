@@ -1,3 +1,9 @@
+2010-01-02  Bernhard Walle <bernhard@bwalle.de>
+
+	* Add usbprog.rules.in that could be used by distributors as template
+	  for their udev configuration (based on the Debian file from
+	  uwe@debian.org).
+
 2009-12-26  Bernhard Walle <bernhard@bwalle.de>
 
 	* Fix the problem that the menu bar is not displayed on MacOS.
