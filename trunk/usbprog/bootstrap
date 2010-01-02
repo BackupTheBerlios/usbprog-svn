@@ -25,7 +25,7 @@ autoheader
 if which glibtoolize >>/dev/null 2>&1 ; then
     glibtoolize --copy
 else
-    glibtoolize --copy
+    libtoolize --copy
 fi
 automake --foreign --add-missing --copy
 autoconf
