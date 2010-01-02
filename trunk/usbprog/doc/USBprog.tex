@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{varioref}
 \usepackage{xcolor}
+\usepackage{pifont}
 
 \definecolor{susepflaume}{rgb}{0,0,0.45}
 \definecolor{listinggray}{gray}{0.90}
@@ -581,8 +582,110 @@ graphical user interface.
 
 \subsection{MacOS}
 
+Porting Unix software to the Mac is easy, but developing cross-platform software that feels really
+MacOS-like is hard---especially if you are software developer and not designer.  Therefore, we don't
+provide a software package for the Mac. But nevertheless: It's easy to install the USBprog software
+on the Mac.
+
+You can compile USBprog directly from the source as described in section
+\vref{sec:compilingfromsource}. However, it's more easy if you use \emph{MacPorts}. Just install
+MacPorts on your computer as described in \cite{InstallingMacports}.
+
+After that, open a Terminal and execute
+
+\begin{lstlisting}[style=inline]
+% sudo port install usbprog
+\end{lstlisting}
+
+After that, you can start the command line tool with \texttt{usbprog} in a shell and the GUI with
+\texttt{usbprog-gui}.
+
+
 \subsection{Compiling USBprog from Source}
 \label{sec:compilingfromsource}
+
+\subsubsection{Operating Systems}
+
+This section describes how to build USBprog from source. Sometimes there are valid reasons that even
+``normal'' users (and not developers) wish to compile the program from the source code:
+
+\begin{itemize}
+  \item a newer version is available that fixes a bug but the distribution package is too old;
+  \item a more ``exotic'' Linux distribution is used for which no binary packages are available;
+  \item even another operating system (not Linux or MacOS) is used.
+\end{itemize}
+
+Therefore, that section describes how to compile USBprog on Unix (which includes MacOS).  Compiling
+it on Windows is completely different. Since there is always a binary setup package is available on
+that platform, the reasons mentioned above don't apply here. If you want to compile USBprog on
+Windows, refer to the file \texttt{win32/README} in the USBprog source distribution.
+
+\subsubsection{Dependencies}
+
+When compiling software from source, care must be taken to ensure that all dependencies are
+installed on the computer. The USBprog software needs following other software components. If you
+use distribution packages to install these dependencies, ensure that the header files (usually in a
+subpackage \texttt{-dev}\footnote{on Debian/Ubuntu} or \texttt{-devel}\footnote{on RPM-based
+distributions like Red Hat or SUSE}) are installed, too.
+
+\begin{itemize}
+  \item a working C++ compiler like \texttt{g++};
+  \item Perl (\url{http://www.perl.org}) to build the manual pages from the POD sources;
+  \item libusb (\url{http://www.libusb.org});
+  \item libxml (\url{http://www.xmlsoft.org});
+  \item libcurl (\url{http://curl.haxx.se});
+  \item GNU Readline (\url{http://tiswww.case.edu/php/chet/readline/rltop.html}) only if you want to
+    use command-line completion with \texttt{TAB};
+  \item wxWidgets (\url{http://www.wxwidgets.org}) only if you want to build a graphical user
+    interface.
+\end{itemize}
+
+\subsubsection{Download, Build and Install}
+
+After everything is fine, download the source tarball from following source:
+
+\ding{224} \url{http://developer.berlios.de/project/showfiles.php?group_id=7642}
+
+You should have a file called \texttt{usbprog-@@VERSION@@.tar.bz2} on the disk where
+\texttt{@@VERSION@@} represents the version of the program. At first, extract that tarball and
+change into the newly created directory afterwards:
+
+\begin{lstlisting}[style=inline]
+% tar xvfj usbprog-@@VERSION@@.tar.bz2
+% cd usbprog-@@VERSION@@/
+\end{lstlisting}
+
+Now configure the software using
+
+\begin{lstlisting}[style=inline]
+% ./configure
+\end{lstlisting}
+
+Lots of text messages appear. If the last lines look like
+
+\begin{lstlisting}[style=inline]
+---------------------------------------------------
+           Build summary
+---------------------------------------------------
+Readline         : enabled
+GUI (wxWidgets)  : enabled
+---------------------------------------------------
+\end{lstlisting}
+
+everything is fine. Of course ``disabled'' is also okay, but then the specific feature is missing!
+
+Build and install the software with
+
+\begin{lstlisting}[style=inline]
+% make
+% sudo make install # or su -c "make install"
+\end{lstlisting}
+
+You can now start the software with \texttt{usbprog} (the CLI variant) or \texttt{usbprog-gui} (the
+graphical user interface, if built) and should also find it in the menu of your desktop environment.
+Also, a manual page should be available, both \emph{usbprog(1)} and \emph{usbprog-gui(1)}.
+
+
 
 
 
@@ -591,6 +694,8 @@ graphical user interface.
 \begin{thebibliography}{99}
   \bibitem{AVRdude} AVRDUDE Manual,
     \url{http://www.nongnu.org/avrdude/user-manual/avrdude.html}
+
+  \bibitem{InstallingMacports} ``Installing MacPorts'', \url{http://www.macports.org/install.php}
 \end{thebibliography}
 
 
