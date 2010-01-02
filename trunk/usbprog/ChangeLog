@@ -3,6 +3,8 @@
 	* Add usbprog.rules.in that could be used by distributors as template
 	  for their udev configuration (based on the Debian file from
 	  uwe@debian.org).
+	* Also uninstall the link to the Embedded Projects website in the
+	  "Start" menu on Win32.
 
 2009-12-26  Bernhard Walle <bernhard@bwalle.de>
 

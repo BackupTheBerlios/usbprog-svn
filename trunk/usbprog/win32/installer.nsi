@@ -180,6 +180,7 @@ Section Uninstall
   Delete "$INSTDIR"
 
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Emmbedded Projects.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\${SHORTCUT_NAME}.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\${CLI_SHORTCUT_NAME}.lnk"
