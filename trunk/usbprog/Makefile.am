@@ -9,7 +9,8 @@ EXTRA_DIST            = bootstrap win32/libusbprog.dev win32/usbprog.dev \
 			win32/README RELEASEPLAN \
 			src/usbprog.pod gui/usbprog-gui.pod \
 			usbprog.desktop \
-			config/libcurl.m4
+			config/libcurl.m4 \
+			usbprog.rules.in
 
 AUTOMAKE_OPTIONS      = foreign
 SUBDIRS               = md5 usbprog src gui
