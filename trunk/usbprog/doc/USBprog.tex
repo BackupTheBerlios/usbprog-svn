@@ -7,7 +7,6 @@
 \usepackage{varioref}
 \usepackage{xcolor}
 
-\definecolor{susedarkgreen}{rgb}{0.129,0.47,0.03}
 \definecolor{susepflaume}{rgb}{0,0,0.45}
 \definecolor{listinggray}{gray}{0.90}
 
@@ -453,6 +452,139 @@ the firmware starts after next reconnect instead of putting the USBprog in updat
 
 \section{Installation}
 \label{sec:installation}
+
+\subsection{Binary Packages for Linux}
+
+This section describes the installation of binary packages on wide-spread Linux distributions. If
+you have a more exotic Linux distribution, another Unix flavour or if you just want to use the
+latest and greatest version, proceed by reading section \vref{sec:compilingfromsource}.
+
+In any case: After the installation has finished, the program can be started using \texttt{usbprog}
+in a shell for the command line version of the USBprog software and \texttt{usbprog-gui} for the
+graphical user interface (if installed). In the last case, USBprog should also appear in the start
+menu of your desktop environment\footnote{At least if you use KDE, GNOME or Xfce.}, at least after
+logging out and logging in again.
+
+\subsubsection{Ubuntu/Debian}
+
+That's the easiest distribution because Uwe Herrman (\url{uwe@debian.org}) was so kind to provide
+Debian packages. Because everything that is in Debian is also in \emph{Universe,} you also have that
+advantage on Ubuntu.
+
+So: Just open a Terminal and install USBprog by entering
+
+\begin{lstlisting}[style=inline]
+% sudo aptitude install usbprog
+\end{lstlisting}
+
+If you also want to use the graphical interface of the USBprog software, use
+
+\begin{lstlisting}[style=inline]
+% sudo aptitude install usbprog usbprog-gui
+\end{lstlisting}
+
+The only ``disadvantage'' of installing the GUI is that it probably will install some dependencies
+like wxGtk.
+
+\subsubsection{openSUSE and SLES}
+
+There are binary packages in the \href{https://build.opensuse.org/}{openSUSE Build Service},
+directly from the author. So they should be always up to date. They are in the \emph{electronics}
+repository. To add the repository to your package list, open a shell and then enter
+
+\begin{lstlisting}[style=inline]
+% sudo zypper ar -r http://repos.opensuse.org/electronics/@@DIST@@/electronics.repo
+\end{lstlisting}
+
+The term \texttt{@@DIST@@} has to be substituted version of your openSUSE or SLES as shown in table
+\vref{tab:susedistributions}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|p{4cm}p{10cm}|}
+    \hline
+    \textbf{String}                 & \textbf{Distribution}                               \\
+    \hline
+    \hline
+    \texttt{openSUSE\_11.0}         & openSUSE 11.0                                       \\
+    \texttt{openSUSE\_11.1}         & openSUSE 11.1                                       \\
+    \texttt{openSUSE\_11.2}         & openSUSE 11.2                                       \\
+    \texttt{SUSE\_Linux\_Factory}   & openSUSE Factory (the unstable development version) \\
+    \texttt{SLE\_10}                & SUSE Linux Enterprise (Desktop/Server) 10           \\
+    \texttt{SLE\_11}                & SUSE Linux Enterprise (Desktop/Server) 11           \\
+    \hline
+  \end{tabular}
+  \caption{SUSE Distribution strings for the \emph{electronics} Build Service repository}
+  \label{tab:susedistributions}
+\end{table}
+
+After that, refresh the package list with
+
+\begin{lstlisting}[style=inline]
+% sudo zypper ref
+\end{lstlisting}
+
+You're now ready to install USBprog:
+
+\begin{lstlisting}[style=inline]
+% sudo zypper install usbprog usbprog-gui
+\end{lstlisting}
+
+If you don't need the graphical user interface, just omit the \texttt{usbprog-gui} package. Of
+course, since the repository is now known by the package manager, you can also install or uninstall
+the USBprog packages using YaST.
+
+\subsubsection{Fedora, CentOS and RHEL}
+
+You may be surprised, but the binary packages for Fedora, Red Hat and CentOS are also built in the
+\href{https://build.opensuse.org/}{openSUSE Build Service}. The only difference of that section
+compared with the previous section is that we describe \texttt{yum} instead of \texttt{zypper} here.
+
+There's no command so add a repository in \texttt{yum}. Instead, you have to change to the directory
+\texttt{/etc/yum.repos.d} and download the repository file. In that case, you have to substitute
+\texttt{@@DIST@@} with values of table \vref{tab:redhatdistributions}.
+
+\begin{lstlisting}[style=inline]
+% su
+# cd /etc/yum.repos.d
+# wget http://repos.opensuse.org/electronics/@@DIST@@/electronics.repo
+\end{lstlisting}
+
+\begin{table}[htb]
+  \centering
+  \begin{tabular}{|p{4cm}p{10cm}|}
+    \hline
+    \textbf{String}                 & \textbf{Distribution}                               \\
+    \hline
+    \hline
+    \texttt{Fedora\_11}             & Fedora 11                                           \\
+    \texttt{Fedora\_12}             & Fedora 12                                           \\
+    \texttt{CentOS\_5}              & CentOS 5                                            \\
+    \texttt{RHEL\_5}                & Red Hat Enterprise Linux 5                          \\
+    \hline
+  \end{tabular}
+  \caption{Distribution strings for Red Hat-like distributions in the Build Service}
+  \label{tab:redhatdistributions}
+\end{table}
+
+Since the refresh is done automatically by \texttt{yum}, just install the package(s) with
+
+\begin{lstlisting}[style=inline]
+# yum install usbprog usbprog-gui
+\end{lstlisting}
+
+As with SUSE and Ubuntu, you can omit the \texttt{usbprog-gui} package if you don't plan to use the
+graphical user interface.
+
+
+\subsection{Windows}
+
+\subsection{MacOS}
+
+\subsection{Compiling USBprog from Source}
+\label{sec:compilingfromsource}
+
+
 
 \bibliographystyle{IEEEtran}
 
