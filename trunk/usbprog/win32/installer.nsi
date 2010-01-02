@@ -171,18 +171,6 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Function .onInit
-  ;
-  ; Windows Vista detection
-  ;
-  Call GetWindowsVersion
-  Pop $R0
-
-  StrCmp $R0 "Vista" 0 true
-  MessageBox MB_YESNO "Windows Vista is known to be not working. Do you want to continue installation?" IDYES true IDNO false
-false:
-  Abort
-true:
-
   !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
