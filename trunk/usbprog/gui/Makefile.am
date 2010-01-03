@@ -23,3 +23,5 @@ usbprog-gui.1: usbprog-gui.pod
 		--center="USBprog GUI" 	\
 		--release=$(VERSION)	\
 		> usbprog-gui.1
+
+# vim: set sw=8 ts=8 noet:
