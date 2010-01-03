@@ -573,6 +573,102 @@ graphical user interface.
 
 \subsection{Windows}
 
+\subsubsection{Supported Systems}
+
+This section describes the installation of USBprog on Windows. Although binary packages are
+provided, the installation is not trivial since we need to install a device driver---unlikely the
+other operating systems that are able to handle USB devices in userspace without driver
+installation.
+
+At first, make sure that you're running one of following operating systems:
+
+\begin{itemize}
+  \item Windows 2000 with SP4
+  \item Windows XP with SP3 (32 bit only)
+  \item Windows Vista with SP1 (32 bit or 64 bit)\footnote{I was not able to test Windows Vista since
+    I don't have it. The problem that prevented other USB devices from working after the
+    installation of the USBprog software should be resolved at Windows 7 also was affected and
+    Windows 7 works now.}
+  \item Windows 7 (32 bit or 64 bit)
+\end{itemize}
+
+Although the installation package is prepared to run on a 64 bit Windows, I was not able to test it.
+If you are successfully able to use it, please drop me a \href{bernhard@bwalle.de}{note}.
+
+\subsubsection{Getting the Software}
+
+\textbf{Note:} Please install the software \emph{before} attaching the hardware the first time. That
+makes it easier for you. If you already attached the hardware, abort the driver installation
+process.
+
+You can download the latest Windows installer package at following site:
+
+\ding{224} \url{http://developer.berlios.de/project/showfiles.php?group_id=7642}
+
+There's only one installer package for both 32 and 64 bit Windows. While the userspace program is
+always 32 bit, the driver is available as 32 bit and 64 bit version. Windows (like Linux) can handle
+32 bit software on x86-64\footnote{also known as ``x64'' or ``amd64''}, but drivers have to be 64
+bit.
+
+
+\subsubsection{Installation of the Software}
+
+Installation of the \emph{userspace software} (that excludes the driver part) is as easy as
+installing any other Windows program. Just start the installer with a double click, confirm the
+license, confirm the installation path and you're done.
+
+To start the graphical user interface, select ``Start'' $\rightarrow$ ``USBprog''
+$\rightarrow$ ``USBprog''. The command line interface has the name ``USBprog Commandline''.
+
+To uninstall the software, just use the ``Uninstall'' entry in the start menu or go to ``Control
+Panel'' $\rightarrow$ ``Software''.
+
+
+\subsubsection{Driver Installation on Windows 2000 and XP}
+
+After you downloaded the software, the driver is located at \texttt{c:\textbackslash{}Program
+Files\textbackslash{}USBprog\textbackslash{}driver} on an English Windows. Replace the ``Program
+Files'' with something locale-specific like ``Programme'' in a German Windows installation.
+
+To install the driver, perform these steps. We assume that you successfully installed the bootloader
+on the device as described in section \vref{sec:inithardware}.
+
+\begin{enumerate}
+  \item Insert jumper \texttt{JP1} (see section \vref{sec:jumpers}) to put the device into
+    programming mode after power up.
+  \item Connect the device.
+  \item After a few seconds, the ``New Hardware Wizard'' should appear.
+  \item Don't connect with \emph{Windows Update}---you don't find a driver for the USBprog there.
+  \item Choose ``Install from a list or specific location (Advanced)''.
+  \item Select ``Search for the best driver in these locations'' and tick ``Include this location in
+    the search''.
+  \item Choose ``Browse'' and select the driver directory mentioned above \newline
+    (\texttt{c:\textbackslash{}Program Files\textbackslash{}USBprog\textbackslash{}driver}).
+\end{enumerate}
+
+That's it. Figure \vref{fig:inst_winxp} shows screenshots of the dialogs (German only). To test your
+installation, fire up the USBprog software. In the command line mode, \texttt{devices} should list
+exactly one USBprog device and in GUI mode, the combo box should have also an entry.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=92mm]{images/win_xp_1.png}
+  \includegraphics[width=92mm]{images/win_xp_2.png}
+  \includegraphics[width=92mm]{images/win_xp_3.png}
+  \caption{Installation workflow on Windows XP (German only)}
+  \label{fig:inst_winxp}
+\end{figure}
+
+\subsubsection{Driver Installation on Windows Vista and 7}
+
+The following procedure describes only Windows 7, but Windows Vista should be similar.
+
+\textbf{Note:} If you have a 64 bit version of Windows Vista or 7, you cannot install unsigned
+device drivers by default. However, there's a software called
+\href{http://www.ngohq.com/home.php?page=dseo}{Driver Signature Enforcement
+Overrider} that should solve that problem. Use the software at own risk---sorry!
+
+
 \subsection{MacOS}
 
 Porting Unix software to the Mac is easy, but developing cross-platform software that feels really
@@ -690,7 +786,6 @@ Also, a manual page should be available, both \emph{usbprog(1)} and \emph{usbpro
 
   \bibitem{InstallingMacports} ``Installing MacPorts'', \url{http://www.macports.org/install.php}
 \end{thebibliography}
-
 
 \end{document}
 
