@@ -75,6 +75,7 @@ Section "!USBprog" SEC01
   File "zlib1.dll"
   File "libcurl.dll"
   File "mingwm10.dll"
+  File "..\doc\USBprog.pdf"
   File /r /x .svn "driver"
 
 ; Shortcuts
