@@ -14,7 +14,7 @@
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
 !define SHORTCUT_NAME "${PRODUCT_NAME} GUI"
-!define DOC_SHORTCUT_NAME "${PRODUCT_NAME} Documentation"
+!define DOC_SHORTCUT_NAME "${PRODUCT_NAME} User's Guide"
 !define CLI_SHORTCUT_NAME "${PRODUCT_NAME} Commandline"
 
 ; MUI 1.67 compatible ------
@@ -128,13 +128,7 @@ FunctionEnd
 Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
   RmDir /r "$INSTDIR"
-
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Emmbedded Projects.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\${SHORTCUT_NAME}.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\${CLI_SHORTCUT_NAME}.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\${DOC_SHORTCUT_NAME}.lnk"
+  RmDir /r "$SMPROGRAMS\$ICONS_GROUP"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
