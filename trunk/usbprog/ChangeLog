@@ -7,6 +7,10 @@
 	* Register the uninstaller on Windows in the Control Panel.
 	* Install the driver files in c:\Program Files\USBprog\driver.
 	* Ensure that the complete program directory gets uninstalled.
+	* Install usbprog.pdf to $(docdir)/usbprog on Unix and in the program
+	  directory on Windows.
+	* Create a help menu entry to open the PDF documentation in the
+	  system's default PDF viewer.
 
 2010-01-02  Bernhard Walle <bernhard@bwalle.de>
 
