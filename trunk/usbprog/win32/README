@@ -17,6 +17,8 @@ Win32 README for USBprog                                           2010-01-03
                              projects: libmd5, libusbprog, usbprog (CLI) and
                              usbprog-gui.
     usbprog.ico ............ Icon for USBprog used in the Windows program.
+    installer.nsi .......... Description file for NSIS to generate a Windows
+                             installer package.
 
 
 (2) Compilation
