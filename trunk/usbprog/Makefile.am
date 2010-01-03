@@ -10,7 +10,8 @@ EXTRA_DIST            = bootstrap win32/libusbprog.dev win32/usbprog.dev \
 			src/usbprog.pod gui/usbprog-gui.pod \
 			usbprog.desktop \
 			config/libcurl.m4 \
-			usbprog.rules.in
+			usbprog.rules.in \
+			doc/USBprog.pdf
 
 AUTOMAKE_OPTIONS      = foreign
 SUBDIRS               = md5 usbprog src gui
@@ -26,5 +27,8 @@ if GUI
 desktopdir = $(datadir)/applications
 desktop_DATA = usbprog.desktop
 endif
+
+# install 'usbprog.pdf' to $(docdir)
+doc_DATA = doc/USBprog.pdf
 
 
