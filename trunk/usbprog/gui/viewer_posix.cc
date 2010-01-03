@@ -22,7 +22,7 @@
 
 #include "viewer.h"
 
-#ifdef __MACOS__
+#ifdef __APPLE__
 #  define VIEWER_COMMAND "open"
 #else
 #  define VIEWER_COMMAND "xdg-open"
