@@ -4,9 +4,11 @@
   * Build system fixes for MacOS.
   * Don't install the filter driver on Win32. This makes USBprog
     compatible with Windows Vista and Windows 7.
-  * Register the uninstaller on Windows in the Control Panel. 
+  * Register the uninstaller on Windows in the Control Panel.
   * Install the driver files in c:\Program Files\USBprog\driver.
   * Ensure that the complete program directory gets uninstalled.
+  * Install PDF documentation and add a new menu entry in "Help"
+    that opens a PDF viewer and shows that PDF documentation.
 
 0.1.10
 ------
