@@ -9,10 +9,12 @@ bin_PROGRAMS            = usbprog-gui
 usbprog_gui_SOURCES  	= usbprogFrm.h usbprogFrm.cc \
 			  usbprogApp.h usbprogApp.cc \
 			  infodialog.cc infodialog.h \
-			  pindialog.cc pindialog.h
+			  pindialog.cc pindialog.h \
+			  viewer.cc viewer.h
 usbprog_gui_LDADD	= ../usbprog/libusbprog.la \
 			  @WX_LIBS@
 man_MANS		= usbprog-gui.1
+usbprog_gui_CXXFLAGS    = -DDOCDIR=\"$(docdir)\"
 
 icondir = $(datadir)/pixmaps
 icon_DATA = usbprog_icon.xpm

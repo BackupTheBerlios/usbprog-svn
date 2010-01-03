@@ -1,7 +1,7 @@
 [Project]
 FileName=usbprog-gui.dev
 Name=usbprog-gui
-UnitCount=9
+UnitCount=11
 Type=1
 Ver=1
 ObjFiles=
@@ -128,6 +128,26 @@ BuildCmd=
 
 [Unit9]
 FileName=..\gui\infodialog.h
+CompileCpp=1
+Folder=usbprog-gui
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit10]
+FileName=..\gui\viewer_win32.cc
+CompileCpp=1
+Folder=usbprog-gui
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=..\gui\viewer.h
 CompileCpp=1
 Folder=usbprog-gui
 Compile=1

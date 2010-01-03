@@ -56,6 +56,7 @@ class usbprogFrm : public wxFrame {
         void deleteCache(wxCommandEvent &evt);
         void exitMenuHandler(wxCommandEvent &evt);
         void aboutMenuHandler(wxCommandEvent &evt);
+        void helpDocumentHandler(wxCommandEvent &evt);
         void deviceComboHandler(wxCommandEvent &evt);
         void deviceRefreshHandler(wxCommandEvent &evt);
         void firmwareRefreshHandler(wxCommandEvent &evt);
@@ -111,6 +112,7 @@ class usbprogFrm : public wxFrame {
             ID_PROCESS_GAUGE,
             ID_COPYRIGHT_LABEL,
             ID_EXIT_MENU,
+            ID_SHOW_HELP_DOCUMENT,
             ID_ABOUT_MENU,
             ID_FIRMWARE_INFO,
             ID_PIN_INFO,

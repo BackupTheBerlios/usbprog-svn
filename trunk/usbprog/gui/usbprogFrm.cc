@@ -27,12 +27,17 @@
 #include <wx/arrstr.h>
 #include <wx/gbsizer.h>
 #include <wx/sizer.h>
+#include <wx/filename.h>
+#ifdef _WIN32
+#  include <wx/msw/registry.h>
+#endif
 
 #include <usbprog/util.h>
 #include "usbprogFrm.h"
 #include "usbprogApp.h"
 #include "infodialog.h"
 #include "pindialog.h"
+#include "viewer.h"
 #include "usbprogApp.h"
 
 #include "usbprog.xpm"
@@ -49,6 +54,9 @@ using std::fopen;
 using std::fclose;
 using std::setvbuf;
 
+#define REGKEY_USBPROG_PATH \
+    "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\usbprog-gui.exe"
+
 // Global Variables:
 bool internetConnection = true;
 
@@ -59,6 +67,7 @@ BEGIN_EVENT_TABLE(usbprogFrm,wxFrame)
 	EVT_CLOSE(usbprogFrm::OnClose)
     EVT_MENU(ID_EXIT_MENU,              usbprogFrm::exitMenuHandler)
     EVT_MENU(ID_ABOUT_MENU,             usbprogFrm::aboutMenuHandler)
+    EVT_MENU(ID_SHOW_HELP_DOCUMENT,     usbprogFrm::helpDocumentHandler)
     EVT_MENU(ID_CACHE_DELETE,           usbprogFrm::deleteCache)
     EVT_MENU(ID_CACHE_CLEAN,            usbprogFrm::cleanCache)
     EVT_MENU(ID_CACHE_DOWNLOAD_ALL,     usbprogFrm::downloadAll)
@@ -173,7 +182,9 @@ void usbprogFrm::CreateGUIControls()
 
     // Help
     wxMenu *helpMenu = new wxMenu;
-    helpMenu->Append(ID_ABOUT_MENU, wxT("&About\tF1"),
+    helpMenu->Append(ID_SHOW_HELP_DOCUMENT, wxT("&User's Manual\tF1"),
+            wxT("Opens a PDF viewer with the help document"));
+    helpMenu->Append(ID_ABOUT_MENU, wxT("&About"),
             wxT("Show version information"));
 
     wxMenuBar *menuBar = new wxMenuBar();
@@ -337,6 +348,45 @@ void usbprogFrm::aboutMenuHandler(wxCommandEvent &evt)
             wxT("About ..."),
             wxOK | wxICON_INFORMATION);
     dlg.ShowModal();
+}
+
+/* -------------------------------------------------------------------------- */
+void usbprogFrm::helpDocumentHandler(wxCommandEvent &evt)
+{
+    wxString docpath;
+    
+#ifdef _WIN32
+    wxString idName(wxT(REGKEY_USBPROG_PATH));
+
+    wxRegKey regKey;
+    regKey.SetName(idName);
+    if (!regKey.Open(wxRegKey::Read)) {
+        status("Unable to read application dir path (1)");
+        return;
+    }
+    
+    wxString value;
+    if (!regKey.QueryValue(NULL, value)) {
+        status("Unable to read application dir path (2)");
+        regKey.Close();
+        return;
+    }
+    
+    regKey.Close();
+    wxFileName file(value);
+    file.SetFullName(wxT(""));
+    docpath = file.GetPath();
+#else
+    docpath = wxT(DOCDIR);
+#endif
+
+    wxString filename = wxT("USBprog.pdf");
+    wxString path = docpath + wxFileName::GetPathSeparator() + filename;
+    SetStatusText(path);
+    if (Viewer::openPDF(path))
+        status("PDF viewer opened with documentation.");
+    else
+        status("Unable to open documentation in PDF viewer.");
 }
 
 /* -------------------------------------------------------------------------- */
