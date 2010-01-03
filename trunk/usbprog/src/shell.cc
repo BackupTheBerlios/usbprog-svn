@@ -200,6 +200,9 @@ CommandArg *CommandArg::fromString(const std::string &str, CommandArg::Type type
                 ret->setFloat(val);
                 break;
             }
+
+        case INVALID:
+            break;
     }
 
     return ret;

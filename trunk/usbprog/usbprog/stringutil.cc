@@ -136,7 +136,7 @@ string wordwrap(const string &text, ssize_t margins)
     int curline = 0;
 
     while (ss >> s) {
-        if ((margins < 0) || (curline + s.size() + 1 < margins)) {
+        if ((margins < 0) || (curline + int(s.size()) + 1 < margins)) {
             if (curline != 0) {
                 ret += " ";
                 curline++;

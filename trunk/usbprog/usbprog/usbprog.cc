@@ -128,6 +128,9 @@ void Debug::vmsg(Debug::Level level, const char *msg, va_list list)
         case DL_DEBUG:
             strcat(newmsg, "DEBUG: ");
             break;
+
+        case DL_NONE:
+            break;
     }
     strcat(newmsg, msg);
 

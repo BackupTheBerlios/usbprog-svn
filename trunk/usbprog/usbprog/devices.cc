@@ -158,7 +158,7 @@ bool operator==(const DeviceVector &a, const DeviceVector &b)
     if (a.size() != b.size())
         return false;
 
-    for (int i = 0; i < a.size(); ++i)
+    for (unsigned int i = 0; i < a.size(); ++i)
         if (*(a[i]) != *(b[i]))
             return false;
 
@@ -392,7 +392,7 @@ Device *DeviceManager::getDevice(size_t number) const
 /* -------------------------------------------------------------------------- */
 void DeviceManager::setCurrentUpdateDevice(ssize_t number)
 {
-    if (number < 0 || number >= m_updateDevices.size())
+    if (number < 0 || number >= int(m_updateDevices.size()))
         return;
     m_currentUpdateDevice = number;
 }
@@ -456,7 +456,7 @@ void UsbprogUpdater::writeFirmware(const ByteVector &bv)
     int page = 0;
     memset(cmd, 0, USB_PAGESIZE);
 
-    for (int i = 0; i < bv.size(); i += 64) {
+    for (unsigned int i = 0; i < bv.size(); i += 64) {
         size_t sz = min(USB_PAGESIZE, int(bv.size()-i));
         memset(buf, 0, USB_PAGESIZE);
         copy(bv.begin() + i, bv.begin() + i + sz, buf);

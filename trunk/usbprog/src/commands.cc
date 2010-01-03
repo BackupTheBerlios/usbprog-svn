@@ -290,7 +290,7 @@ bool PinCommand::execute(CommandArgVector   args,
             pins.erase(delit);
     }
 
-    for (int i = 0; i < pins.size(); i += 2) {
+    for (unsigned int i = 0; i < pins.size(); i += 2) {
         os << "[" << right << setw(5) << pins[i] << "] "
              << setw(maxlen) << left << fw->getPin(pins[i]);
 
@@ -648,7 +648,7 @@ bool DeviceCommand::execute(CommandArgVector   args,
         m_devicemanager->discoverUpdateDevices(m_firmwarepool);
 
     bool is_number = true;
-    for (int i = 0; i < device.size(); i++) {
+    for (unsigned int i = 0; i < device.size(); i++) {
         if (!isdigit(device[i])) {
             is_number = false;
             break;
@@ -662,11 +662,12 @@ bool DeviceCommand::execute(CommandArgVector   args,
         ss << device;
         ss >> updatedevice;
 
-        if (updatedevice < 0 || updatedevice >= m_devicemanager->getNumberUpdateDevices())
+        int number_of_devices = m_devicemanager->getNumberUpdateDevices();
+        if (updatedevice < 0 || updatedevice >= number_of_devices)
             throw ApplicationError("Invalid device number specified.");
     } else {
 
-        for (int i = 0; i < m_devicemanager->getNumberUpdateDevices(); i++) {
+        for (unsigned int i = 0; i < m_devicemanager->getNumberUpdateDevices(); i++) {
             Device *dev = m_devicemanager->getDevice(i);
 
             if (dev->getShortName() == device) {
@@ -716,7 +717,7 @@ StringVector DeviceCommand::getCompletions(
         return StringVector();
 
     StringVector result;
-    for (int i = 0; i < m_devicemanager->getNumberUpdateDevices(); i++) {
+    for (unsigned int i = 0; i < m_devicemanager->getNumberUpdateDevices(); i++) {
         stringstream ss;
         ss << i;
         result.push_back(ss.str());
