@@ -1,10 +1,10 @@
 [Version]
 Signature = "$Chicago$"
 provider  = %manufacturer%
-DriverVer = 03/20/2007,0.1.12.1
-CatalogFile = openOCD.cat
-CatalogFile.NT = openOCD.cat
-CatalogFile.NTAMD64 = openOCD_x64.cat
+DriverVer = 07/07/2009,0.1.12.2
+CatalogFile = usbprog.cat
+CatalogFile.NT = usbprog.cat
+CatalogFile.NTAMD64 = usbprog_x64.cat
 
 Class = LibUsbDevices
 ClassGUID = {EB781AAF-9C70-4523-A5DF-642A87ECA567}
@@ -108,7 +108,7 @@ HKR,,SurpriseRemovalOK, 0x00010001, 1
 ;--------------------------------------------------------------------------
 
 [libusb_add_service]
-DisplayName    = "LibUsb-Win32 - Kernel Driver 03/20/2007, 0.1.12.1"
+DisplayName    = "LibUsb-Win32 - Kernel Driver 07/07/2009, 0.1.12.2"
 ServiceType    = 1
 StartType      = 3
 ErrorControl   = 0
@@ -119,13 +119,13 @@ ServiceBinary  = %12%\libusb0.sys
 ;--------------------------------------------------------------------------
 
 [Devices]
-"OpenOCD Debugger"=LIBUSB_DEV, USB\VID_1781&PID_0c63
+"usbprogBase Mode"=LIBUSB_DEV, USB\VID_1781&PID_0c62
 
 [Devices.NT]
-"OpenOCD Debugger"=LIBUSB_DEV, USB\VID_1781&PID_0c63
+"usbprogBase Mode"=LIBUSB_DEV, USB\VID_1781&PID_0c62
 
 [Devices.NTAMD64]
-"OpenOCD Debugger"=LIBUSB_DEV, USB\VID_1781&PID_0c63
+"usbprogBase Mode"=LIBUSB_DEV, USB\VID_1781&PID_0c62
 
 
 ;--------------------------------------------------------------------------
@@ -133,4 +133,4 @@ ServiceBinary  = %12%\libusb0.sys
 ;--------------------------------------------------------------------------
 
 [Strings]
-manufacturer = "B. Sauter"
+manufacturer = "USBprog EmbeddedProjects"

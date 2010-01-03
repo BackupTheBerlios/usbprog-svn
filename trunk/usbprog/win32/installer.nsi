@@ -24,19 +24,12 @@
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 
-; Language Selection Dialog Settings
-!define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
-!define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
-!define MUI_LANGDLL_REGISTRY_VALUENAME "NSIS:Language"
-
-
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !define MUI_LICENSEPAGE_RADIOBUTTONS
 !insertmacro MUI_PAGE_LICENSE "..\COPYING"
-; Components page
-!insertmacro MUI_PAGE_COMPONENTS
+
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Start menu page
@@ -50,20 +43,14 @@ var ICONS_GROUP
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 
-Page Custom libusb             ;Install Libusb
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\${PRODUCT_EXE_FILE}"
-;Page Custom delFilter
 !insertmacro MUI_PAGE_FINISH
-
-
 
 ; Uninstaller pages
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_LANGUAGE "German"
 
 ; MUI end ------
 
@@ -88,32 +75,13 @@ Section "!USBprog" SEC01
   File "zlib1.dll"
   File "libcurl.dll"
   File "mingwm10.dll"
-  SetOutPath "$WINDIR\inf\"
-  SetOverwrite off
-  File "usbprog.inf"
-  File "openOCD.inf"
-  File "usbprog.cat"
-  File "openOCD.cat"
-  File "usbprog_x64.cat"
-  File "openOCD_x64.cat"
-  SetOutPath "$WINDIR\system32\"
-  File "libusb0.dll"
-  SetOutPath "$WINDIR\system32\drivers\"
-  File "libusb0.sys"
+  File /r /x .svn "driver"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\${CLI_SHORTCUT_NAME}.lnk" "$INSTDIR\${CLI_EXE_FILE}"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\${SHORTCUT_NAME}.lnk" "$INSTDIR\${PRODUCT_EXE_FILE}"
-  !insertmacro MUI_STARTMENU_WRITE_END
-SectionEnd
-
-Section "LibUSB" SEC02
-  SetOutPath "$INSTDIR"
-  File "libusb-win32-filter-bin-0.1.12.2.exe"
-  ; Shortcuts
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
@@ -137,59 +105,26 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
-; Section descriptions
-!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "USBprog CLI"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "LibUsb for USB Support"
-!insertmacro MUI_FUNCTION_DESCRIPTION_END
-
-Function libusb
- IfFileExists "$INSTDIR\libusb-win32-filter-bin-0.1.12.2.exe" 0 NO_LIB
-      Exec "$INSTDIR\libusb-win32-filter-bin-0.1.12.2.exe"
-   NO_LIB:
+Function un.onInit
+!insertmacro MUI_UNGETLANGUAGE
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Do you want to uninstall $(^Name)?" IDYES +2
+  Abort
 FunctionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) wurde erfolgreich deinstalliert."
-FunctionEnd
-
-Function un.onInit
-!insertmacro MUI_UNGETLANGUAGE
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Möchten Sie $(^Name) und alle seinen Komponenten deinstallieren?" IDYES +2
-  Abort
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) has been removed successfully."
 FunctionEnd
 
 Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\libusb-win32-filter-bin-0.1.12.2.exe"
- ; Delete "$WINDIR\system32\drivers\libusb0.sys"
- ; Delete "$WINDIR\system32\libusb0.dll"
- ; Delete "$WINDIR\inf\usbprog_x64.cat"
- ; Delete "$WINDIR\inf\usbprog_openocd.cat"
- ; Delete "$WINDIR\inf\usbprog.cat"
- ; Delete "$WINDIR\inf\usbprog_openocd.inf"
- ; Delete "$WINDIR\inf\usbprog.inf"
-  Delete "$INSTDIR\${PRODUCT_EXE_FILE}"
-  Delete "$INSTDIR\libxml2.dll"
-  Delete "$INSTDIR\libiconv-2.dll"
-  Delete "$INSTDIR\zlib1.dll"
-  Delete "$INSTDIR\libcurl.dll"
-  Delete "$INSTDIR"
+  RmDir /r "$INSTDIR"
 
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Emmbedded Projects.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\${SHORTCUT_NAME}.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\${CLI_SHORTCUT_NAME}.lnk"
-
-  RMDir "$WINDIR\system32\drivers\"
-  RMDir "$WINDIR\system32\"
-  RMDir "$WINDIR\inf\"
-  RMDir "$SMPROGRAMS\$ICONS_GROUP"
-  RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
