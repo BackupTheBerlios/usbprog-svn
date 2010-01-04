@@ -480,6 +480,14 @@ If you also want to use the graphical interface of the USBprog software, use
 The only ``disadvantage'' of installing the GUI is that it probably will install some dependencies
 like wxGtk.
 
+If you want to access the USBprog as user, that user has to be put in the \texttt{plugdev} group. To
+do so, just execute (replace \texttt{@@USERNAME@@} with the username that you want to put into that
+group):
+
+\begin{lstlisting}[style=inline]
+% sudo usermod -aG plugdev @@USERNAME@@
+\end{lstlisting}
+
 \subsubsection{openSUSE and SLES}
 
 There are binary packages in the \href{https://build.opensuse.org/}{openSUSE Build Service},
@@ -528,6 +536,9 @@ If you don't need the graphical user interface, just omit the \texttt{usbprog-gu
 course, since the repository is now known by the package manager, you can also install or uninstall
 the USBprog packages using YaST.
 
+If you want to access the USBprog as user, that user has to be put in the \texttt{uucp} group. Just
+use YaST to perform that task. See also \texttt{/usr/share/doc/packages/usbprog/README.SUSE}.
+
 \subsubsection{Fedora, CentOS and RHEL}
 
 You may be surprised, but the binary packages for Fedora, Red Hat and CentOS are also built in the
@@ -570,6 +581,16 @@ Since the refresh is done automatically by \texttt{yum}, just install the packag
 As with SUSE and Ubuntu, you can omit the \texttt{usbprog-gui} package if you don't plan to use the
 graphical user interface.
 
+If you want to access the USBprog as user, that user has to be put in the \texttt{uucp} group on
+RHEL/CentOS 5 or in the \texttt{dialout} group on recent Fedora versions. Just execute
+
+\begin{lstlisting}[style=inline]
+% sudo usermod -aG uucp @@USERNAME@@     # RHEL 5, CentOS 5
+% sudo usermod -aG dialout @@USERNAME@@  # Fedora > 10
+\end{lstlisting}
+
+where \texttt{@@USERNAME@@} has to be replaced with the login of the user that should be in that
+group.  See also \texttt{/usr/share/doc/usbprog/README.\{CentOS,Fedora,RedHat\}}.
 
 \subsection{Windows}
 
