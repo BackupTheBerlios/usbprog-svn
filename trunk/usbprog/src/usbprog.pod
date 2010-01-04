@@ -47,7 +47,7 @@ Uses I<datadir> instead of F<~/.usbprog>.
 Don't try to connect to the internet. Use the cached firmware and index
 file(s) only.
 
-=item B<-d> | B<--debug>
+=item B<-D> | B<--debug>
 
 Enable some debugging output. Almost useless.
 
