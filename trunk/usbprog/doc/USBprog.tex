@@ -9,7 +9,7 @@
 \usepackage{pifont}
 
 \definecolor{susepflaume}{rgb}{0,0,0.45}
-\definecolor{listinggray}{gray}{0.90}
+\definecolor{listinggray}{gray}{0.95}
 
 \usepackage{listings}
 \lstset{%
@@ -39,9 +39,10 @@
 \lstdefinestyle{inline}{%
         frame=none,
         numbers=none,
-        backgroundcolor=\color{white},
         xleftmargin=5mm,
-        framexleftmargin=0mm,
+        framexleftmargin=1mm,
+        xrightmargin=5mm,
+        framexrightmargin=1mm,
         belowskip=\smallskipamount,
 }
 
@@ -64,7 +65,7 @@
 
 % This is the default.
 \setcounter{secnumdepth}{2}
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 
 \begin{document}
 
@@ -389,6 +390,7 @@ which is described in section \vref{sec:firstfirmware}---just the next section!
 \label{sec:installation}
 
 \subsection{Binary Packages for Linux}
+\label{sec:linux_binary_installation}
 
 This section describes the installation of binary packages on wide-spread Linux distributions. If
 you have a more exotic Linux distribution, another Unix flavour or if you just want to use the
@@ -951,7 +953,53 @@ Okay, that's it! The next chapters describe both the GUI and the command line in
 want to do something real with your USBprog like programming an AVR microcontroller, read chapter
 \vref{sec:commonfirmwares}.
 
-\chapter{The USBprog GUI}
+\chapter{USBprog Software Reference}
+
+\section{The Firmware Pool}
+
+\subsection{Overview}
+\label{sec:firmwarepool_overview}
+
+Both the GUI and the command line use the firmware pool available in the internet. Therefore, you
+need an internet connection to use USBprog, at least at the first time. Since the firmware pool is
+cached on the disk, you can also use USBprog without an internet connection later.
+
+To get the list of available firmware files, USBprog will connect to the internet at startup and
+download the file \url{http://www.ixbat.de/usbprog/versions.xml}. So if you run some ``personal
+firewall'' software on Windows and that software asks you if it's okay to connect to the internet,
+that's because of that file.
+
+Right of the label ``Online Pool'', there's a combo box with all the firmwares available at the
+firmware pool. Before uploading a firmware to the USBprog device, you probably want to get some
+information for the firmware first.
+
+\subsection{Location of the Cache}
+
+For the curious, here's the location of the firmware cache where also the \texttt{version.xml} file
+is downloaded:
+
+\begin{itemize}
+  \item \textbf{Linux/MacOS:} \texttt{\$HOME/.usbprog}
+  \item \textbf{Windows:} \texttt{\%APPDATA\%} (just enter that in the Explorer and it shows you
+    the directory in your Windows installation), for example: \\
+    \texttt{c:\textbackslash{}Documents and Settings\textbackslash{}bwalle\textbackslash{}Anwendungsdaten}
+\end{itemize}
+
+\section{Configuring a Proxy}
+
+The USBprog software uses \emph{libcurl} for internet access. Therefore, it honours the environment
+variable \texttt{http\_proxy} that simply can be set to the hostname of the proxy. Read the manpage
+\emph{curl(1)} and the ``ENVIRONMENT'' section in specific for more information.
+
+In addition to that settings, the Windows version of USBprog also honours the Internet Explorer proxy
+settings. However, also on Windows, the environment variables overwrite the Internet Explorer
+settings. If you are in doubt, set the environment since that's better documented and supported
+directly by \emph{libcurl}.
+
+
+
+\section{Graphical User Interface}
+\label{sec:gui}
 
 The installation instructions in section \vref{sec:installation} explain also how to start the
 USBprog GUI. After the program has started, a window like figure \vref{fig:screenshot} should
@@ -966,23 +1014,6 @@ should be small.
   \label{fig:screenshot}
 \end{figure}
 
-
-\section{The Firmware Pool}
-
-\subsection{Overview}
-
-Both the GUI and the command line use the firmware pool available in the internet. Therefore, you
-need an internet connection to use USBprog, at least at the first time. Since the firmware pool is
-cached on the disk, you can also use USBprog without an internet connection later.
-
-To get the list of available firmware files, USBprog will connect to the internet at startup and
-download the file \url{http://www.ixbat.de/usbprog/versions.xml}. So if you run some ``personal
-firewall'' software on Windows and that software asks you if it's okay to connect to the internet,
-that's because of that file.
-
-Right of the label ``Online Pool'', there's a combo box with all the firmwares available at the
-firmware pool. Before uploading a firmware to the USBprog device, you probably want to get some
-information for the firmware first.
 
 
 \subsection{Getting Information for a Firmware}
@@ -1025,19 +1056,8 @@ For cleanup, there are two different entries:
   \item The ``Delete cache'' function removes all firmware files from the cache.
 \end{itemize}
 
-\subsection{Location of the Cache}
 
-For the curious, here's the location of the firmware cache where also the \texttt{version.xml} file
-is downloaded:
-
-\begin{itemize}
-  \item \textbf{Linux/MacOS:} \texttt{\$HOME/.usbprog}
-  \item \textbf{Windows:} \texttt{\%APPDATA\%} (just enter that in the Explorer and it shows you
-    the directory in your Windows installation), for example: \\
-    \texttt{c:\textbackslash{}Documents and Settings\textbackslash{}bwalle\textbackslash{}Anwendungsdaten}
-\end{itemize}
-
-\section{Uploading a Firmware}
+\subsection{Uploading a Firmware}
 
 Uploading a firmware from the online pool is easy:
 
@@ -1055,7 +1075,7 @@ Don't forget to remove the \texttt{JP1} jumper!
 If you want to upload a firmware that is not in the cache, click on the radio button ``Local disk''
 and use ``Browse'' to select a full path to the firmware file (binary format). The rest is the same.
 
-\section{Debugging}
+\subsection{Debugging}
 
 If something doesn't work and you need support from the author (or any other party listed in section
 \vref{sec:support}), a logfile is always helpful. To write a log file in the GUI, click on
@@ -1076,7 +1096,270 @@ shell (Unix only):
 
 
 
-\chapter{The USBprog Command Line}
+\section{USBprog Command Line}
+\label{sec:cli}
+
+\subsection{Overview}
+
+Why use the command line version if there's a GUI (section \vref{sec:gui})? There are several
+reasons:
+
+\begin{itemize}
+  \item The command line version is available everywhere (for example on RHEL there's no
+    \emph{wxWidgets} package, therefore it's much more work to get the GUI running).
+
+  \item The command line version can be scripted.
+
+  \item Some people like me prefer CLIs\footnote{Command Line Interface} over GUIs. \texttt{:-)}
+\end{itemize}
+
+Because the GUI and the command line use the same library, they should share all bugs and features.
+They also share the cache.
+
+The USBprog command line client works like a shell. Each command takes a fixed number of arguments.
+If the argument is not specified, the shell asks for it:
+
+\begin{lstlisting}[style=inline]
+(usbprog) helpcmd
+command> _
+\end{lstlisting}
+
+Also, some commands can be accessed via multiple names:
+
+\begin{lstlisting}[style=inline]
+(usbprog) helpcmd bla
+Invalid command: bla
+(usbprog) ? bla
+Invalid command: bla
+\end{lstlisting}
+
+The best: If compiled with readline support which is the case for all binary packages listed in
+section \vref{sec:linux_binary_installation}, \texttt{TAB} completion works like you would expect
+it.
+
+
+\subsection{Getting Help}
+
+Because a CLI cannot be ``self-explanatory'', there are several ways to get a quick help beside from
+that document. The command
+
+\begin{lstlisting}[style=inline]
+(usbprog) help
+\end{lstlisting}
+
+displays a list of all available commands. To get more help for a specific command, use
+\texttt{helpcmd \emph{COMMAND}} or \texttt{? \emph{COMMAND}}. For example:
+
+\begin{lstlisting}[style=inline]
+(usbprog) ? pin
+Name:            pin
+Aliases:         pins
+Argument:        firmware
+
+Description:
+Prints a list about pin usage. This might help you when connecting
+something to your USBprog.
+\end{lstlisting}
+
+Last, but not least, the manual page \emph{usbprog(1)} briefly lists all commands and invocation
+parameters.
+
+\subsection{Exiting}
+
+Well, it's quite obvious, but since the documentation should be complete, there are three ways to
+exit the shell:
+
+\begin{enumerate}
+  \item The command \texttt{exit}.
+  \item The alias \texttt{quit}.
+  \item Sending a end-of-line (EOL) with \texttt{Ctrl-D} on Unix and \texttt{Ctrl-Z} on Windows.
+\end{enumerate}
+
+\subsection{Getting Information for a Firmware}
+
+To view a list of firmware files in the pool (see section \vref{sec:firmwarepool_overview} for an
+explanation of the firmware pool), use the command \texttt{list} like here:
+
+\begin{lstlisting}[style=inline]
+(usbprog) list
+JTAGICE2      [ ] JTAGICE2
+XSVF Player   [ ] XSVF Player
+at89prog      [*] at89prog
+avrispmk2     [*] AVRISP mk2 Clone
+blinkdemo     [ ] LEDBLINK
+openocd       [*] OpenOCD Debugger
+simpleport    [*] SimplePort
+usbprogrs232  [*] usbprogRS232
+
+*: Firmware file downloaded
+\end{lstlisting}
+
+The star (\texttt{*}) shows if the firmware is already downloaded for offline usage. To display
+information about a specific firmware, use \texttt{info \emph{FIRMWARE}} and \texttt{pins
+\emph{FIRMWARE}}:
+
+\begin{lstlisting}[style=inline]
+(usbprog) info blinkdemo
+Identifier   : blinkdemo
+Name         : LEDBLINK
+URL          : http://www.ixbat.de/usbprog/
+File name    : blinkdemo.bin
+Author       : Benedikt Sauter
+Version      : 1 [2007-08-13]
+Device ID(s) : Vendor: 0x1781, Product: 0x0c62, BCDDevice: 0x0001
+
+Description
+A simple LED blink demo.
+
+For information about the Pin assignment, use the "pin blinkdemo" command.
+
+(usbprog) pins blinkdemo
+            +----------------+
+            |  9  7  5  3  1 |
+            | 10  8  6  4  2 |
+            +----------------+
+
+[   P1]               [   P2] 
+[   P3]               [   P4] 
+[   P5]               [   P6] 
+[   P7]               [   P8] 
+[   P9]               [  P10] 
+[  LED] Blink LED     
+\end{lstlisting}
+
+\subsection{Uploading a Firmware}
+
+Before you can upload a firmware, you must select a device first and---contrary to the GUI---you
+must download the firmware file to the cache.
+
+\subsubsection{Selecting a Device}
+
+The \texttt{devices} command gives you a list of available updatable devices:
+
+\begin{lstlisting}[style=inline]
+(usbprog) devices
+ [ 0]  *  Bus 006 Device 004: 1781:c620
+          usbprog: USBprog in update mode
+\end{lstlisting}
+
+In that case, the device is already selected as update device. This is the case if there's only one
+device available and if that device is already in update mode (see section
+\vref{sec:switch_updatemode}). Otherwise, select the device with the \texttt{device \emph{NUMBER}}
+command as update device:
+
+\begin{lstlisting}[style=inline]
+(usbprog) device 0
+\end{lstlisting}
+
+\subsubsection{Downloading the Firmware}
+
+The \texttt{list} command shows you with the missing star (\texttt{*}) that the
+\texttt{blinkdemo} is not downloaded. Just download the firmware with
+
+\begin{lstlisting}[style=inline]
+(usbprog) download blinkdemo
+################################################################################
+Firmware blinkdemo has been downloaded successfully.
+\end{lstlisting}
+
+\subsubsection{Uploading the Firmware}
+
+It's recommended that you manually put the hardware in update mode as described in section
+\vref{sec:switch_updatemode}. If that's not done and you selected another device as update device,
+the software tries to put the device in update mode first\footnote{that does not work on Microsoft
+Windows}.
+
+In any case, just upload the firmware with \texttt{upload \emph{FIRMWARE}}:
+
+\begin{lstlisting}[style=inline]
+(usbprog) upload blinkdemo 
+Opening device ...
+Writing firmware ...
+###############################################################################
+Starting device ...
+Detecting new USB devices ...
+\end{lstlisting}
+
+As the output indicates, the firmware starts immediately---in that case, the LED blink frequency
+changes.
+
+\subsubsection{Starting a Firmware}
+
+If you now disconnect the device, leave the \texttt{JP1} jumper connected and connect the
+device again, the device again shows in \emph{update mode}. However, we know that we flashed the
+\texttt{blinkdemo} firmware. We could now remove the jumper and start it, or flash the firmware
+again. But we could also use the \texttt{start} command:
+
+\begin{lstlisting}[style=inline]
+(usbprog) devices
+ [ 0]  *  Bus 006 Device 006: 1781:c620
+          usbprog: USBprog in update mode
+(usbprog) start
+Device successfully started.
+\end{lstlisting}
+
+The firmware starts, we see the blink frequency changing!
+
+
+
+
+
+\subsection{Managing the Cache}
+
+\subsubsection{Downloading Everything}
+
+Of course it's also possible to download every firmware file with the command line interface. Just
+use \texttt{download all}:
+
+\begin{lstlisting}[style=inline]
+(usbprog) download all
+Downloading at89prog ...
+################################################################################
+Downloading AVRISP mk2 Clone ...
+################################################################################
+...
+\end{lstlisting}
+
+\subsubsection{Cleanup}
+
+A cache cleanup can be done with the \texttt{cache \emph{OPERATION}} command. It has two functions:
+
+\begin{itemize}
+  \item If you just want to delete unused files, execute \texttt{cache clean}. That can be firmware
+    files that are not referenced by the index file any more because they have been removed or the
+    version has been increased.
+
+  \item If you want to delete the full cache, use \texttt{cache delete}.
+\end{itemize}
+
+This example shows the effect of the last command:
+
+\begin{lstlisting}[style=inline]
+(usbprog) list
+JTAGICE2      [ ] JTAGICE2
+XSVF Player   [ ] XSVF Player
+at89prog      [*] at89prog
+avrispmk2     [*] AVRISP mk2 Clone
+blinkdemo     [*] LEDBLINK
+openocd       [*] OpenOCD Debugger
+simpleport    [*] SimplePort
+usbprogrs232  [*] usbprogRS232
+
+(usbprog) cache delete 
+
+(usbprog) list
+JTAGICE2      [ ] JTAGICE2
+XSVF Player   [ ] XSVF Player
+at89prog      [ ] at89prog
+avrispmk2     [ ] AVRISP mk2 Clone
+blinkdemo     [ ] LEDBLINK
+openocd       [ ] OpenOCD Debugger
+simpleport    [ ] SimplePort
+usbprogrs232  [ ] usbprogRS232
+\end{lstlisting}
+
+As you see, after the \texttt{cache delete} operation, no firmware is in the cache any more.
+
 
 \chapter{Common Firmwares}
 \label{sec:commonfirmwares}
