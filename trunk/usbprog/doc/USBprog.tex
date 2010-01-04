@@ -326,7 +326,7 @@ For the connection between your programmer and your computer you need a 10-pole 
 pin assignment is the standardised ISP interface as shown in table \vref{tab:isp}. The numbering
 scheme is shown in figure \vref{fig:isp}.
 
-\begin{table}[h]
+\begin{table}[ht]
   \centering
   \begin{tabular}{|p{1cm}p{5cm}|p{1cm}p{5cm}|}
     \hline
@@ -502,7 +502,7 @@ repository. To add the repository to your package list, open a shell and then en
 The term \texttt{@@DIST@@} has to be substituted version of your openSUSE or SLES as shown in table
 \vref{tab:susedistributions}.
 
-\begin{table}[h]
+\begin{table}[ht]
   \centering
   \begin{tabular}{|p{4cm}p{10cm}|}
     \hline
@@ -698,7 +698,7 @@ for a matching driver and doesn't find one. This procedure takes about one minut
 in my installation in VirtualBox, maybe a native Windows is much faster} and then the dialog shown
 in figure \vref{fig:windows_no_driver} appears.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[scale=.7]{images/win7_1.png}
   \caption{No driver has been found (German only)}
@@ -841,6 +841,44 @@ You can now start the software with \texttt{usbprog} (the CLI variant) or \textt
 graphical user interface, if built) and should also find it in the menu of your desktop environment.
 Also, a manual page should be available, both \emph{usbprog(1)} and \emph{usbprog-gui(1)}.
 
+\subsubsection{Permissions}
+
+\textbf{Note:} This applies only to Linux. For other operating systems please refer to the
+documentation of the system vendor or simply stick to \texttt{root}.
+
+By default, only the \texttt{root} user has ``raw'' access to USB devices. Since it's not desirable
+to start USBprog---especially the graphical user interface---always as \texttt{root}, we have to
+change system configuration in a way that it allows non-root users the access to the device.
+
+Whenever a new device is detected on the system, the kernel asks a superspace deamon called
+\emph{udev} to create a new device node below \texttt{/dev}. For USB devices, the raw device file
+(that gets accessed by \emph{libusb} applications like USBprog) is below \texttt{/dev/bus/usb}. The
+permission of that device file determines which user has access to that device file.
+
+A simple solution is now to create a \emph{udev rule} that gives that device file not
+\texttt{root:root} but \texttt{root:@@GROUP@@} with write permission for that group. All users that
+should be allowed to use USBprog can not be put in \texttt{@@GROUP@@}.
+
+A template for that udev rule is distributed with the USBprog source distribution called
+\texttt{usbprog.rules.in}.  Replace the term \texttt{@@USBPROG\_GROUP@@} with the name of the group
+you want to use\footnote{You can create a new group called \texttt{usbprog} or you can simple re-use
+an existing group like \texttt{plugdev} on Ubuntu for storage devices.} and copy the file in
+\texttt{/etc/udev/rules.d}.  Since the lexicographic order in that directory determines the priority
+(processing order) of rules, it's quite common to prefix it with a number. Example:
+
+\begin{lstlisting}[style=inline]
+% sed -e 's/@@USBPROG_GROUP@@/plugdev/g' usbprog.rules.in \
+  > /etc/udev/rules.d/98-usbprog.rules
+\end{lstlisting}
+
+Of course ``modern'' Linux distributions (especially Red Hat and SUSE flavours) offer more
+complicate solutions to give the current ``desktop'' user more permission to the devices. However,
+that solutions are not standardised, tend do change every year and sometimes even are poorly
+documented. Therefore, we don't describe that here. For the average user, this group-based solution
+is sufficient.
+
+However: You don't want to use that solution in a centrally administered company network. Contact
+your system administrator instead. \texttt{:-)}
 
 
 
