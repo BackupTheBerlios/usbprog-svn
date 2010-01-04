@@ -381,68 +381,6 @@ After everything was successful, disconnect the USBprog, remove the jumper \text
 the USBprog again. The red LED blinks now. This is a sign that you're ready to upload a firmware
 which is described in section \vref{sec:firstfirmware}---just the next section!
 
-\section{Upload the First Firmware}
-\label{sec:firstfirmware}
-
-Well, in theory that's not the correct order because you need to install the software first which is
-described in section \vref{sec:installation}. But maybe you're more a software guy and the software
-installation already succeeded, so you're ready to execute that step before looking into detail of
-the software. If not, read section \vref{sec:installation} and come back.
-
-\textbf{Note:} If you're using Windows, we strongly suggest that you read the installation section
-first because the driver installation is more complicated. On Unix, no driver installation is
-necessary since USB devices can driven by userspace programs there.
-
-We describe the command line interface here as ``first step'' for a simple reason: It's exactly the
-same on every platforms and a command can be reproduced by the user more easily than finding GUI
-elements.
-
-So open a shell on Unix (Linux/MacOS) or open the \emph{USBprog Command Line} in the ``Start'' menu
-on Windows. You should see a prompt that looks like
-
-\begin{lstlisting}[style=inline]
-(usbprog) _
-\end{lstlisting}
-
-\textbf{Note:} On Linux, we suggest to run that first test as \texttt{root} user. So switch to
-\texttt{root} using the \texttt{su} command on Fedora/openSUSE or execute the command using
-\texttt{sudo} on Ubuntu. The installation section will show how to configure your system to avoid
-that in future.
-
-Before you connect the USBprog, you should manually switch to update mode by inserting jumper
-\texttt{JP3} like shown in figure \vref{fig:jp3} as ``Programming mode''. After you connected the
-USBprog to the USB port of your computer, wait a few seconds to make sure that the operating system
-detected the device\footnote{On Linux, you can watch that by reading the system log in
-\texttt{/var/log/syslog} or \texttt{/var/log/messages} or repeatedly executing the \texttt{dmesg}
-command.}.
-
-Now the \texttt{devices} command should display a single USBprog device:
-
-\begin{lstlisting}[style=inline]
-(usbprog) devices
- [ 0]  *  Bus 003 Device 002: 1781:c620
-          usbprog: USBprog in update mode
-\end{lstlisting}
-
-Since it's the only device and since the device is already in \emph{update mode,} the star
-(\texttt{*}) after the number shows you that this device is already selected. So you can proceed and
-upload the \texttt{blinkdemo} firmware. That firmware does nothing but blinking the LED. Blinking
-the LED you ask? It's already blinking! Well, the sequence is different, so it should be easily
-possible to distinguish the \texttt{blinkdemo} blinking from the update mode blinking.
-
-Enough talking. Let's now upload the firmware:
-
-\begin{lstlisting}[style=inline]
-(usbprog) upload blinkdemo
-Opening device ...
-Writing firmware ...
-###############################################################################
-Starting device ...
-Detecting new USB devices ...
-\end{lstlisting}
-
-Okay, that's it. Because you want to use the firmware now, remove the \texttt{JP3} jumper so that
-the firmware starts after next reconnect instead of putting the USBprog in update mode.
 
 \chapter{Getting Started with the Software}
 
@@ -963,6 +901,63 @@ mode at next time you connect the USBprog again or the computer boots.
 
 To detect if the firmware is in update mode---you may already have noticed it---the red LED flashes
 in a sequence ``flash, flash, pause, flash, flash, \ldots''.
+
+
+\section{Upload the First Firmware}
+\label{sec:firstfirmware}
+
+We describe the command line interface here as ``first step'' for a simple reason: It's exactly the
+same on every platforms and a command can be reproduced by the user more easily than finding GUI
+elements.
+
+So open a shell on Unix (Linux/MacOS) or open the ``USBprog Commandline'' in the ``Start'' menu on
+Windows. You should see a prompt that looks like
+
+\begin{lstlisting}[style=inline]
+(usbprog) _
+\end{lstlisting}
+
+Now connect the USBprog device with the \texttt{JP1} (update mode) jumper set.  After you connected
+the USBprog to the USB port of your computer, wait a few seconds to make sure that the operating
+system detected the device.
+
+Back to the USBprog software, the \texttt{devices} command should display a single USBprog device:
+
+\begin{lstlisting}[style=inline]
+(usbprog) devices
+ [ 0]  *  Bus 003 Device 002: 1781:c620
+          usbprog: USBprog in update mode
+\end{lstlisting}
+
+Since it's the only device and since the device is already in \emph{update mode,} the star
+(\texttt{*}) after the number shows you that this device is already selected. So you can proceed and
+upload the \texttt{blinkdemo} firmware. That firmware does nothing but blinking the LED. Blinking
+the LED you ask? It's already blinking! Well, the sequence is different, so it should be easily
+possible to distinguish the \texttt{blinkdemo} blinking from the update mode blinking.
+
+Enough talking. Let's now upload the firmware:
+
+\begin{lstlisting}[style=inline]
+(usbprog) upload blinkdemo
+Opening device ...
+Writing firmware ...
+###############################################################################
+Starting device ...
+Detecting new USB devices ...
+\end{lstlisting}
+
+Okay, that's it! The next chapters describe both the GUI and the command line in detail. If you then
+want to do something real with your USBprog like programming an AVR microcontroller, read chapter
+\vref{sec:commonfirmwares}.
+
+\chapter{The USBprog GUI}
+
+\chapter{The USBprog Command Line}
+
+\chapter{Common Firmwares}
+\label{sec:commonfirmwares}
+
+\section{Atmel AVR ISP mkII Clone}
 
 \begin{thebibliography}{99}
   \bibitem{AVRdude} AVRDUDE Manual,
