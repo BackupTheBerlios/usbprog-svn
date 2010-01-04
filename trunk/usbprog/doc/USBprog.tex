@@ -120,6 +120,7 @@ However, I probably cannot help with hardware or firmware problems. See section 
 in that case.
 
 \section{Terms and Definitions}
+\label{sec:definitions}
 
 At first we introduce the term \emph{firmware} and \emph{bootloader} as we use it in the rest of the
 document.
@@ -880,10 +881,88 @@ is sufficient.
 However: You don't want to use that solution in a centrally administered company network. Contact
 your system administrator instead. \texttt{:-)}
 
+\section{The Update Mode}
 
+\subsection{How USB Works}
 
+\subsubsection{USB Device Identification}
+
+You don't know much about USB to use USBprog. However, one fact is important to understand the
+limitations of the USBprog especially on Microsoft Windows: How a USB device is identified.
+
+Whenever you connect a USB device to the computer, the USB \emph{host} (the computer) asks the USB
+\emph{device} a few things. This process is called \emph{enumeration}. After the enumeration process
+has finished, the USB host assigns the USB device an address. On Linux, this process can be watched
+in the kernel log with the \texttt{dmesg} command:
+
+\begin{lstlisting}[style=inline]
+usb 6-1: new full speed USB device using uhci_hcd and address 2
+usb 6-1: New USB device found, idVendor=1781, idProduct=0c62
+usb 6-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+usb 6-1: Product: usbprogBase Mode
+usb 6-1: Manufacturer: USBprog EmbeddedProjects
+usb 6-1: configuration #1 chosen from 1 choice
+\end{lstlisting}
+
+As already mentioned in section \vref{sec:definitions}, the USBprog device has a special
+\emph{bootloader} that allows the \emph{firmware} to be updated without another device.
+When you connect the USBprog to the computer, the device normally starts the firmware.
+If you have flashed for example the \texttt{avrispmk2} firmware, then the device identifies as
+``Atmel AVR ISP mkII''\footnote{USB Vendor ID: 0x03eb, USB Device ID: 0x03eb}.
+
+\textbf{Important:} Although the USBprog is always the same hardware device, depending on the
+operation mode and the firmware, it is seen as totally different devices from the computer's point
+of view. It can even change its identity at runtime without re-attaching!
+
+\subsubsection{USB Drivers on Windows}
+
+Two important things have to be considered when using USB Devices on Microsoft Windows:
+
+\begin{itemize}
+  \item It \emph{does} matter on which USB port a device is connected for a driver. So if you
+    connect the device to a different USB port, the driver installation process has to be repeated.
+    However, since Windows knows the driver from the last time, everything goes
+    automatically---which doesn't Windows prevent from displaying lots of dialogues.
+
+  \item You need a device driver\footnote{One exception are HID drivers which can be accessed from a
+    userspace application.} for each device.
+\end{itemize}
+
+While the first fact is only a bit annoying, the second fact matters when using the USBprog: Since
+the device can change its identity at runtime, after the identity changes, a new device driver has
+to be installed. And it's not possible to access the USBprog device while it emulates another device
+like the Atmel AVR ISP mkII.
+
+However: In normal operation, that's not a problem. I just wanted to explain that fact so that you
+understand why the manual switch to the update mode is necessary.
 
 \bibliographystyle{IEEEtran}
+
+\subsection{Switching to the Update Mode}
+\label{sec:switch_updatemode}
+
+Whenever the firmware (not the bootloader) of the USBprog needs to be updated, the device must be
+switched from normal operation mode to update mode. There are two ways of putting the USBprog in
+update mode:
+
+\begin{enumerate}
+  \item Sending some magic stuff to the device that puts the USBprog in update mode at normal
+    operation runtime.
+  \item Disconnecting the device, setting jumper \texttt{JP1} (see section \vref{sec:jumpers})
+    and connecting the device again.
+\end{enumerate}
+
+While the first variant seems to be easier (especially when developing a new firmware where you have
+to re-flash the USBprog every few minutes), it clearly has its disadvantages: It doesn't work on
+Windows for the reasons already explained and it sometimes doesn't seem to work reliably at all.
+
+Therefore: As ordinary user, we always recommend to use the jumper to switch to update mode! After
+programming, the USBprog automatically switches from update mode to normal mode\footnote{yes, even
+on Windows}. So don't forget to remove the jumper to prevent the USBprog from starting in update
+mode at next time you connect the USBprog again or the computer boots.
+
+To detect if the firmware is in update mode---you may already have noticed it---the red LED flashes
+in a sequence ``flash, flash, pause, flash, flash, \ldots''.
 
 \begin{thebibliography}{99}
   \bibitem{AVRdude} AVRDUDE Manual,
