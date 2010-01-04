@@ -49,7 +49,7 @@ file(s) only.
 
 =item B<-D> | B<--debug>
 
-Enable some debugging output. Almost useless.
+Enable debugging output.
 
 =back
 
