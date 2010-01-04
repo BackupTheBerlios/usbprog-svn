@@ -974,6 +974,7 @@ firmware pool. Before uploading a firmware to the USBprog device, you probably w
 information for the firmware first.
 
 \subsection{Location of the Cache}
+\label{sec:cachelocation}
 
 For the curious, here's the location of the firmware cache where also the \texttt{version.xml} file
 is downloaded:
@@ -1359,6 +1360,44 @@ usbprogrs232  [ ] usbprogRS232
 \end{lstlisting}
 
 As you see, after the \texttt{cache delete} operation, no firmware is in the cache any more.
+
+
+\subsection{Offline Mode}
+
+While the GUI starts in offline mode automatically when it detects no working internet connection,
+the command line client doesn't do that. If you don't have an internet connection, the program
+refuses to work:
+
+\begin{lstlisting}[style=inline]
+% usbprog
+Error: CURL error: Couldn't resolve host 'www.ixbat.de'
+\end{lstlisting}
+
+However, you can activate the offline mode with the \texttt{-o} or \texttt{-{-}offline} flag:
+
+\begin{lstlisting}[style=inline]
+% usbprog -o
+WARNING: You're using usbprog in offline mode!
+(usbprog) _
+\end{lstlisting}
+
+\subsection{Expert Options}
+
+\subsubsection{Debugging}
+
+To get debugging output on standard error, use \texttt{-D} or \texttt{-{-}debug}. You can redirect
+that debugging output to a file using the standard shell feature:
+
+\begin{lstlisting}[style=inline]
+% usbprog --debug 2> debug.log
+(usbprog) _
+\end{lstlisting}
+
+\subsubsection{Alternative Data Directory}
+
+Although section \vref{sec:cachelocation} mentions that the cache is stored in a fixed directory
+location, that location can be overwritten with \texttt{-d \emph{DATADIR}} or \texttt{-{-}datadir
+\emph{DATADIR}}.
 
 
 \chapter{Common Firmwares}
