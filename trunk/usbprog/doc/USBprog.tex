@@ -63,7 +63,8 @@
 \urlstyle{sf}
 
 % This is the default.
-% \setcounter{secnumdepth}{2}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
 
 \begin{document}
 
@@ -951,6 +952,129 @@ want to do something real with your USBprog like programming an AVR microcontrol
 \vref{sec:commonfirmwares}.
 
 \chapter{The USBprog GUI}
+
+The installation instructions in section \vref{sec:installation} explain also how to start the
+USBprog GUI. After the program has started, a window like figure \vref{fig:screenshot} should
+appear. Of course the GUI looks different on the different operating system, but since the program
+is built from the same sources using the cross-platform toolkit \emph{wxWidgets} the differences
+should be small.
+
+\begin{figure}[bp]
+  \centering
+  \includegraphics[scale=0.5]{images/usbprog_gui.png}
+  \caption{Screenshot of USBprog on Linux}
+  \label{fig:screenshot}
+\end{figure}
+
+
+\section{The Firmware Pool}
+
+\subsection{Overview}
+
+Both the GUI and the command line use the firmware pool available in the internet. Therefore, you
+need an internet connection to use USBprog, at least at the first time. Since the firmware pool is
+cached on the disk, you can also use USBprog without an internet connection later.
+
+To get the list of available firmware files, USBprog will connect to the internet at startup and
+download the file \url{http://www.ixbat.de/usbprog/versions.xml}. So if you run some ``personal
+firewall'' software on Windows and that software asks you if it's okay to connect to the internet,
+that's because of that file.
+
+Right of the label ``Online Pool'', there's a combo box with all the firmwares available at the
+firmware pool. Before uploading a firmware to the USBprog device, you probably want to get some
+information for the firmware first.
+
+
+\subsection{Getting Information for a Firmware}
+
+Some very common firmwares are described in chapter \vref{sec:commonfirmwares} in that
+documentation. However, for any firmware available, you can display some brief information.
+Just select the firmware in the combo box and choose ``Firmware'' $\rightarrow$ ``Info'' or press
+\texttt{F2}. A dialog like figure \vref{fig:screenshot_info} appears.
+
+\begin{figure}[hp]
+  \centering
+  \includegraphics[scale=0.5]{images/usbprog_info.png}
+  \caption{Information about the \texttt{avrispmk2} firmware}
+  \label{fig:screenshot_info}
+\end{figure}
+
+If you want to get the pin assignment, choose  ``Firmware'' $\rightarrow$ ``Pins''  or press
+\texttt{F3}. A dialog like figure \vref{fig:screenshot_info} appears.
+
+
+\begin{figure}[hp]
+  \centering
+  \includegraphics[scale=0.5]{images/usbprog_pin.png}
+  \caption{Pin assignment of the \texttt{avrispmk2} firmware}
+  \label{fig:screenshot_pin}
+\end{figure}
+
+\subsection{Cache Management Functions}
+
+If you want to have all firmware files available for offline usage, just choose ``Cache''
+$\rightarrow$ ``Download all''.
+
+For cleanup, there are two different entries:
+
+\begin{itemize}
+  \item The ``Clean'' function only deletes unused firmware files that are still in the cache but
+    are useless: Files that are not referenced in the index file (\texttt{versions.xml}) any more.
+    This can be old versions of firmwares still in the index file or removed firmwares.
+
+  \item The ``Delete cache'' function removes all firmware files from the cache.
+\end{itemize}
+
+\subsection{Location of the Cache}
+
+For the curious, here's the location of the firmware cache where also the \texttt{version.xml} file
+is downloaded:
+
+\begin{itemize}
+  \item \textbf{Linux/MacOS:} \texttt{\$HOME/.usbprog}
+  \item \textbf{Windows:} \texttt{\%APPDATA\%} (just enter that in the Explorer and it shows you
+    the directory in your Windows installation), for example: \\
+    \texttt{c:\textbackslash{}Documents and Settings\textbackslash{}bwalle\textbackslash{}Anwendungsdaten}
+\end{itemize}
+
+\section{Uploading a Firmware}
+
+Uploading a firmware from the online pool is easy:
+
+\begin{enumerate}
+  \item Connect the device in update mode (see section \vref{sec:switch_updatemode}).
+  \item Select a device in the ``Device'' list. Maybe you need to click on ``Refresh'' first.
+  \item Select a firmware in the ``Firmware'' list.
+  \item Click on ``Upload''.
+\end{enumerate}
+
+The progress bar should tell you that there's a upload in process and the string ``Upload
+successful'' should show up in the status bar. The software also starts the firmware immediately.
+Don't forget to remove the \texttt{JP1} jumper!
+
+If you want to upload a firmware that is not in the cache, click on the radio button ``Local disk''
+and use ``Browse'' to select a full path to the firmware file (binary format). The rest is the same.
+
+\section{Debugging}
+
+If something doesn't work and you need support from the author (or any other party listed in section
+\vref{sec:support}), a logfile is always helpful. To write a log file in the GUI, click on
+``Program'' $\rightarrow$ ``Logging'' and select an appropriate path.
+
+You can also start the application in logging mode:
+
+\begin{lstlisting}[style=inline]
+% usbprog-gui -D
+\end{lstlisting}
+
+This logs to standard error. To redirect that to a file, just use the redirection operator of the
+shell (Unix only):
+
+\begin{lstlisting}[style=inline]
+% usbprog-gui -D 2> /path/to/logfile.log
+\end{lstlisting}
+
+
 
 \chapter{The USBprog Command Line}
 
