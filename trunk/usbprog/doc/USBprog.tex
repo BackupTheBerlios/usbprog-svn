@@ -661,13 +661,58 @@ exactly one USBprog device and in GUI mode, the combo box should have also an en
 
 \subsubsection{Driver Installation on Windows Vista and 7}
 
-The following procedure describes only Windows 7, but Windows Vista should be similar.
+The following procedure describes only Windows 7, but Windows Vista should be similar.  To install
+the driver, perform these steps. We assume that you successfully installed the bootloader on the
+device as described in section \vref{sec:inithardware}.
 
 \textbf{Note:} If you have a 64 bit version of Windows Vista or 7, you cannot install unsigned
 device drivers by default. However, there's a software called
 \href{http://www.ngohq.com/home.php?page=dseo}{Driver Signature Enforcement
 Overrider} that should solve that problem. Use the software at own risk---sorry!
 
+Okay, let's start: At first you need to insert jumper \texttt{JP1} (see section \vref{sec:jumpers})
+to put the device into programming mode after power up. Then connect the device. Now Windows looks
+for a matching driver and doesn't find one. This procedure takes about one minute\footnote{at least
+in my installation in VirtualBox, maybe a native Windows is much faster} and then the dialog shown
+in figure \vref{fig:windows_no_driver} appears.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=.7]{images/win7_1.png}
+  \caption{No driver has been found (German only)}
+  \label{fig:windows_no_driver}
+\end{figure}
+
+So we have to install the driver manually:
+
+\begin{enumerate}
+  \item Open the ``Device Manager''. You find it in ``Control Panel'' $\rightarrow$ ``Hardware and
+    Sound'' $\rightarrow$ ``Devices and Printers'' $\rightarrow$ ``Device Manager''.
+
+  \item The device ``usbprogBase Mode'' should appear there with a little warning sign as shown in
+    figure \vref{fig:windows_manual_driver} in the first picture. Select ``Update driver''. 
+
+  \item Windows asks you where you want to search for the driver (figure
+    \vref{fig:windows_manual_driver}, second picture). Choose to manually specify the location
+    and select \texttt{c:\textbackslash{}Program Files\textbackslash{}USBprog\textbackslash{}driver}
+    then.
+
+  \item A red warning that the driver is not signed appears (figure
+    \vref{fig:windows_manual_driver}, third picture). Confirm the driver installation!
+\end{enumerate}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[scale=.58]{images/win7_2.png} \\[1mm]
+  \includegraphics[scale=.58]{images/win7_3.png} \\[1mm]
+  \includegraphics[scale=.58]{images/win7_4.png}
+  \caption{Manual driver installation on Windows (German only)}
+  \label{fig:windows_manual_driver}
+\end{figure}
+
+That's it. To test your installation, fire up the USBprog software. In the command line mode,
+devices should list exactly one USBprog device and in GUI mode, the combo box should have also an
+entry.
 
 \subsection{MacOS}
 
