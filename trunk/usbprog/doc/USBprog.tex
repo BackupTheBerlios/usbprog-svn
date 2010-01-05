@@ -1377,6 +1377,37 @@ Although section \vref{sec:cachelocation} mentions that the cache is stored in a
 location, that location can be overwritten with \texttt{-d \emph{DATADIR}} or \texttt{-{-}datadir
 \emph{DATADIR}}.
 
+\subsection{Batch Mode}
+
+As already mentioned, you can use \texttt{usbprog} not only in interactive shell mode but also in
+batch mode. Just specify the commands as arguments of \texttt{usbprog} like in that example:
+
+\begin{lstlisting}[style=inline]
+% usbprog devices
+No devices found.
+\end{lstlisting}
+
+Since the number of arguments for a command is always fixed\footnote{That's why \texttt{help}
+doesn't take a command as argument and you have to use either \texttt{?} or \texttt{helpcmd}.},
+you can specify multiple commands without a separator:
+
+\begin{lstlisting}[style=inline]
+% usbprog device 0 download blinkdemo upload blinkdemo
+===> device 0
+
+===> download blinkdemo
+Firmware blinkdemo has been downloaded successfully.
+
+===> upload blinkdemo
+Switching to update mode ...
+Opening device ...
+Writing firmware ...
+Starting device ...
+Detecting new USB devices ...
+\end{lstlisting}
+
+To be able to read the error messages correctly, if specified multiple commands, the
+\texttt{usbprog} program adds the command before showing the output, prefixed with \texttt{===>}.
 
 \chapter{Common Firmwares}
 \label{sec:commonfirmwares}
@@ -1539,7 +1570,8 @@ group right of ``Input HEX file'', select that file and click on ``Program'' and
     \url{http://creativecommons.org/licenses/by-sa/3.0/}
 
 
-  \bibitem{WinavrManual} ``WinAVR User's Manual'' \url{http://winavr.sourceforge.net/WinAVR-user-manual.html}
+  \bibitem{WinavrManual} ``WinAVR User's Manual'' \\
+    \url{http://winavr.sourceforge.net/WinAVR-user-manual.html}
 
 \end{thebibliography}
 
