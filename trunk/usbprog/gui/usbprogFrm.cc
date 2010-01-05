@@ -343,7 +343,7 @@ void usbprogFrm::aboutMenuHandler(wxCommandEvent &evt)
 {
     wxMessageDialog dlg(this,
             wxT("USBprog " USBPROG_VERSION_STRING "\n"
-                "(c) 2007-2009, Bernhard Walle <bernhard@bwalle.de>\n"
+                "(c) 2007-2010, Bernhard Walle <bernhard@bwalle.de>\n"
                 "http://www.embedded-projects.net/usbprog"),
             wxT("About ..."),
             wxOK | wxICON_INFORMATION);
