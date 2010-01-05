@@ -354,7 +354,7 @@ void usbprogFrm::aboutMenuHandler(wxCommandEvent &evt)
 void usbprogFrm::helpDocumentHandler(wxCommandEvent &evt)
 {
     wxString docpath;
-    
+
 #ifdef _WIN32
     wxString idName(wxT(REGKEY_USBPROG_PATH));
 
@@ -364,14 +364,14 @@ void usbprogFrm::helpDocumentHandler(wxCommandEvent &evt)
         status("Unable to read application dir path (1)");
         return;
     }
-    
+
     wxString value;
     if (!regKey.QueryValue(NULL, value)) {
         status("Unable to read application dir path (2)");
         regKey.Close();
         return;
     }
-    
+
     regKey.Close();
     wxFileName file(value);
     file.SetFullName(wxT(""));
