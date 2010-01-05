@@ -457,8 +457,15 @@ If you don't need the graphical user interface, just omit the \texttt{usbprog-gu
 course, since the repository is now known by the package manager, you can also install or uninstall
 the USBprog packages using YaST.
 
-If you want to access the USBprog as user, that user has to be put in the \texttt{uucp} group. Just
-use YaST to perform that task. See also \texttt{/usr/share/doc/packages/usbprog/README.SUSE}.
+If you want to access the USBprog as user, that user has to be put in the \texttt{uucp} group on
+SLES and openSUSE until 11.2. Starting with openSUSE 11.2, the group is \texttt{dialout}. The group
+name has been chosen to match the group of the serial devices (\texttt{/dev/ttyS*}).  See also
+\texttt{/usr/share/doc/packages/usbprog/README.SUSE}.
+
+Just use YaST to perform that task: Start \texttt{yast users} on a root shell, select the user with
+the cursor keys, press \texttt{F4} (Edit), press \texttt{Alt-d} (Details) press \texttt{TAB} until
+``Additional Groups'' is selected on the right, select the group, press \texttt{SPACE} to mark that
+group and leave YaST by pressing \texttt{F10} twice.
 
 \subsubsection{Fedora, CentOS and RHEL}
 
