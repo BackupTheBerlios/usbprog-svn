@@ -1,3 +1,7 @@
+2010-01-05  Bernhard Walle <bernhard@bwalle.de>
+
+	* First "finished" version of the PDF documentation.
+
 2010-01-04  Bernhard Walle <bernhard@bwalle.de>
 
 	* Fix usbprog(1): The short form for --debug is -D, not -d.
