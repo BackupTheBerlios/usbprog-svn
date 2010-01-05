@@ -1,6 +1,8 @@
 2010-01-05  Bernhard Walle <bernhard@bwalle.de>
 
 	* First "finished" version of the PDF documentation.
+	* Rename "JP" to "JP4" in the pin information dialog to make it more
+	  clear that the "JP4" jumper is the firmware-specific one.
 
 2010-01-04  Bernhard Walle <bernhard@bwalle.de>
 

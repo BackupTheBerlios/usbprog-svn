@@ -2,6 +2,8 @@
 ------
   * Install PDF documentation and add a new menu entry in "Help"
     that opens a PDF viewer and shows that PDF documentation.
+  * Rename "JP" to "JP4" in the pin information dialog to make it more clear
+    that the "JP4" jumper is the firmware-specific one.
   * MacOS:
     o Fix the problem that the menu bar is not displayed on MacOS.
     o Build system fixes for MacOS.

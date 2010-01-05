@@ -180,7 +180,7 @@ void PinDialog::createControls()
             wxRIGHT, 20);
 
     // JP
-    m_jpLabel = new wxStaticText(this, ID_JP_LABEL, wxT("JP:"));
+    m_jpLabel = new wxStaticText(this, ID_JP_LABEL, wxT("JP4:"));
     m_jpLabel->SetFont(font);
     descSizer->Add(m_jpLabel, wxGBPosition(5, 2), wxGBSpan(),
             wxALIGN_RIGHT|wxRIGHT, 10);
