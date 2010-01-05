@@ -1,14 +1,16 @@
 0.2.0
 ------
-  * Fix the problem that the menu bar is not displayed on MacOS.
-  * Build system fixes for MacOS.
-  * Don't install the filter driver on Win32. This makes USBprog
-    compatible with Windows Vista and Windows 7.
-  * Register the uninstaller on Windows in the Control Panel.
-  * Install the driver files in c:\Program Files\USBprog\driver.
-  * Ensure that the complete program directory gets uninstalled.
   * Install PDF documentation and add a new menu entry in "Help"
     that opens a PDF viewer and shows that PDF documentation.
+  * MacOS:
+    o Fix the problem that the menu bar is not displayed on MacOS.
+    o Build system fixes for MacOS.
+  * Windows:
+    o Don't install the filter driver on Win32. This makes USBprog
+      compatible with Windows Vista and Windows 7.
+    o Register the uninstaller on Windows in the Control Panel.
+    o Install the driver files in c:\Program Files\USBprog\driver.
+    o Ensure that the complete program directory gets uninstalled.
 
 0.1.10
 ------
