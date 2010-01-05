@@ -329,33 +329,8 @@ necessary to supply the USBprog with power. The green power LED (\texttt{LED1}, 
 and with your computer.
 
 For the connection between your programmer and your computer you need a 10-pole ribbon cable. The
-pin assignment is the standardised ISP interface as shown in table \vref{tab:isp}. The numbering
-scheme is shown in figure \vref{fig:isp}.
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{|p{1cm}p{5cm}|p{1cm}p{5cm}|}
-    \hline
-    \textbf{Pin} & \textbf{Description} & \textbf{Pin} & \textbf{Description} \\
-    \hline
-    \hline
-    1            & MOSI (data out)       & 2            & VCC (+5~V)           \\
-    3            & --                    & 4            & GND (signal ground)  \\
-    5            & RESET                 & 6            & \verb+"+             \\
-    7            & SCK (clock)           & 8            & \verb+"+             \\
-    9            & MISO (instruction in) & 10           & \verb+"+             \\
-    \hline
-  \end{tabular}
-  \caption{ISP Pin Assignment}
-  \label{tab:isp}
-\end{table}
-
-\begin{figure}[tb]
-  \centering
-  \includegraphics{images/isp}
-  \caption{Pin numbering used in the ISP pin assignment}
-  \label{fig:isp}
-\end{figure}
+pin assignment is the standardised ISP interface which is described in section
+\vref{sec:avrisp_pinout}.
 
 \subsubsection{Flashing the Firmware}
 
@@ -1406,7 +1381,153 @@ location, that location can be overwritten with \texttt{-d \emph{DATADIR}} or \t
 \chapter{Common Firmwares}
 \label{sec:commonfirmwares}
 
+\section{Conventions}
+
+When describing pinouts, the we use always the pin numbering scheme in figure \vref{fig:isp}.
+
+\begin{figure}[hb]
+  \centering
+  \includegraphics{images/isp}
+  \caption{Pin numbering used in that document}
+  \label{fig:isp}
+\end{figure}
+
 \section{Atmel AVR ISP mkII Clone}
+
+\subsection{Purpose}
+
+The \emph{AVR ISP mkII} is a device from Atmel to program AVR microcontrollers. You can view a
+picture online at following site:
+
+\ding{224} \url{http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3808}
+
+This firmware emulates that device. The advantage of emulating this device rather than inventing an
+own protocol (like \emph{USBasp}\footnote{\url{http://www.fischl.de/usbasp/}}) is that existing
+programming software can be used. The most common programming tools
+
+\begin{itemize}
+  \item \emph{AVRDUDE} (\url{http://www.nongnu.org/avrdude/})
+  \item \emph{AVR Studio} (\url{http://www.atmel.com/dyn/products/tools_card.asp?tool_id=2725})
+\end{itemize}
+
+support that hardware device on all operating systems they run on.
+
+\subsection{Pinout}
+\label{sec:avrisp_pinout}
+
+The pinout of the AVR ISP mkII (and of course also of this clone) is the standardised ISP pinout as
+shown in table \vref{tab:isp}.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|p{1cm}p{5cm}|p{1cm}p{5cm}|}
+    \hline
+    \textbf{Pin} & \textbf{Description} & \textbf{Pin} & \textbf{Description} \\
+    \hline
+    \hline
+    1            & MOSI (data out)       & 2            & VCC (+5~V)           \\
+    3            & --                    & 4            & GND (signal ground)  \\
+    5            & RESET                 & 6            & \verb+"+             \\
+    7            & SCK (clock)           & 8            & \verb+"+             \\
+    9            & MISO (instruction in) & 10           & \verb+"+             \\
+    \hline
+  \end{tabular}
+  \caption{ISP Pin Assignment}
+  \label{tab:isp}
+\end{table}
+
+\subsection{Programming AVRs with AVRDUDE}
+
+Although this section should be helpful if it's the first time you're using AVRDUDE together with
+USBprog, this document cannot replace the documentation of AVRDUDE \cite{AVRdude}. If you have not
+already downloaded AVRDUDE, you should do now. On Windows we suggest the excellent \emph{WinAVR}
+software that can be obtained at
+
+\ding{224} \url{http://winavr.sourceforge.net}
+
+Like for the USBprog device itself, you also have to install a device driver for AVRDUDE. When using
+the \texttt{avrispmk2} firmware, the USBprog emulates a different device and so it needs a different
+driver. The documentation \cite{WinavrManual} helps here.
+
+If everything is fine and you started the \texttt{avrispmk2} firmware on your USBprog, connect it to
+a microcontroller circuit using the ISP interface and then you can test the hardware and the
+installation with
+
+\begin{lstlisting}[style=inline]
+% avrdude -c avrispmkII -P usb -p m8
+
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e9307
+avrdude: current erase-rewrite cycle count is 68 (if being tracked)
+
+avrdude: safemode: Fuses OK
+
+avrdude done.  Thank you.
+
+\end{lstlisting}
+
+Don't forget to replace the string \texttt{m8} with the type of your microcontroller. If you don't
+want to consult the documentation, AVRDUDE also gives you a list of valid parts when using a invalid
+part:
+
+\begin{lstlisting}[style=inline]
+% avrdude -p ?
+
+Valid parts are:
+  x128a4 = ATXMEGA128A4    [/opt/cross/etc/avrdude.conf:14931]
+  x64a4 = ATXMEGA64A4     [/opt/cross/etc/avrdude.conf:14834]
+  x32a4 = ATXMEGA32A4     [/opt/cross/etc/avrdude.conf:14737]
+...
+\end{lstlisting}
+
+To upload a program called \texttt{blink.hex}, just use
+
+\begin{lstlisting}[style=inline]
+% avrdude -p m8 -e -U flash:w:blink.hex -y
+\end{lstlisting}
+
+\subsection{Programming AVRs with AVR Studio}
+
+It's a matter of taste whether you use AVRDUDE or AVR Studio to program your AVRs. If you don't use
+Microsoft Windows, the decision is easier since AVRDUDE runs on basically any operating system while
+AVR Studio only runs on Windows. The advantage of AVR Studio is clearly that it's integrated in the
+rest of the IDE, so you don't have to fire a command prompt to program the device.
+
+If you have not already downloaded and installed AVR Studio we suggest to visit following site that
+contains direct links to the latest AVR Studio versions. You can download the program then without
+registering at Atmel.
+
+\ding{224} \url{http://www.mikrocontroller.net/articles/AVR-Studio}
+
+After you installed AVR Studio, don't forget to install the \emph{Jungo} USB driver needed for the
+AVR ISP mkII device (regardless whether it's the original or the clone). Read the included
+documentation if you have problems.
+
+If that's done, you should be able to connect with the device using ``Tools'' $\rightarrow$
+``Program AVR'' $\rightarrow$ ``Connect\ldots''. Select ``AVRISP mkII'' in the left list and ``USB''
+in the right list as shown in figure \vref{fig:avrstudio_deviceselection}.  Now it takes a few
+seconds and the programming dialog shown in figure \vref{fig:avrstudio_programming} appears. appear.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[scale=0.6]{images/avrstudio_01.png}
+  \caption{Device selection dialog of AVR Studio}
+  \label{fig:avrstudio_deviceselection}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[scale=0.6]{images/avrstudio_02.png}
+  \caption{Programming dialog of AVR Studio}
+  \label{fig:avrstudio_programming}
+\end{figure}
+
+To upload the same \texttt{blink.hex} file as with AVRDUDE, click on the ``\ldots'' in the ``Flash''
+group right of ``Input HEX file'', select that file and click on ``Program'' and ``Verify''.
+
 
 \begin{thebibliography}{99}
   \bibitem{AVRdude} AVRDUDE Manual,
@@ -1416,6 +1537,9 @@ location, that location can be overwritten with \texttt{-d \emph{DATADIR}} or \t
 
   \bibitem{LicenseCC} Creative Commons license ``Attribution-Share Alike 3.0 Unported'', \newline
     \url{http://creativecommons.org/licenses/by-sa/3.0/}
+
+
+  \bibitem{WinavrManual} ``WinAVR User's Manual'' \url{http://winavr.sourceforge.net/WinAVR-user-manual.html}
 
 \end{thebibliography}
 
