@@ -39,7 +39,7 @@ bool Viewer::openPDF(const wxString &file)
     }
 
     const wxChar *args[] = {
-        wxString::FromUTF8(VIEWER_COMMAND),
+        wxT(VIEWER_COMMAND),
         file,
         NULL
     };
