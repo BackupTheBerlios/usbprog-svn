@@ -1,3 +1,8 @@
+0.2.1
+-----
+  * MacOS
+    o Fix Help -> User's Manual.
+
 0.2.0
 ------
   * Install PDF documentation and add a new menu entry in "Help"
