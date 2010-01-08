@@ -6,8 +6,8 @@ SOURCES 	= USBprog.tex
 DVIPARAMS	= -output-format dvi -src-specials
 PDFPARAMS       =
 
-default: pdf images
-all: dvi pdf images
+default: images pdf
+all: images dvi pdf
 
 dvi: $(DVIDOCUMENT)
 $(DVIDOCUMENT): $(SOURCES)
