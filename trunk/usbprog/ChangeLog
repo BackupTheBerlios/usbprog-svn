@@ -1,3 +1,7 @@
+2010-01-08  Bernhard Walle <bernhard@bwalle.de>
+
+	* Documentation: Mention "ldconfig" after running "make install".
+
 2010-01-06  Bernhard Walle <bernhard@bwalle.de>
 
 	* Fix Help -> User's Manual on MacOS.
