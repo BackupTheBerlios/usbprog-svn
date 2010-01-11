@@ -574,6 +574,7 @@ Panel'' $\rightarrow$ ``Software''.
 
 
 \subsubsection{Driver Installation on Windows 2000 and XP}
+\label{sec:driverinstallation_2k_xp}
 
 After you downloaded the software, the driver is located at \texttt{c:\textbackslash{}Program
 Files\textbackslash{}USBprog\textbackslash{}driver} on an English Windows. Replace the ``Program
@@ -609,6 +610,7 @@ exactly one USBprog device and in GUI mode, the combo box should have also an en
 \end{figure}
 
 \subsubsection{Driver Installation on Windows Vista and 7}
+\label{sec:driverinstallation_vista_7}
 
 The following procedure describes only Windows 7, but Windows Vista should be similar.  To install
 the driver, perform these steps. We assume that you successfully installed the bootloader on the
@@ -1478,15 +1480,30 @@ shown in table \vref{tab:isp}.
 \subsection{Programming AVRs with AVRDUDE}
 
 Although this section should be helpful if it's the first time you're using AVRDUDE together with
-USBprog, this document cannot replace the documentation of AVRDUDE \cite{AVRdude}. If you have not
-already downloaded AVRDUDE, you should do now. On Windows we suggest the excellent \emph{WinAVR}
-software that can be obtained at
+USBprog, this document cannot replace the documentation of AVRDUDE \cite{AVRdude}.
+
+\subsubsection{Downloading AVRDUDE}
+
+If you have not already downloaded AVRDUDE, you should do now. On Windows we suggest the excellent
+\emph{WinAVR} software that can be obtained at
 
 \ding{224} \url{http://winavr.sourceforge.net}
 
+Don't forget to consult its documentation \cite{WinavrManual} on any problems.
+
+\subsubsection{Driver Installation}
+
 Like for the USBprog device itself, you also have to install a device driver for AVRDUDE. When using
 the \texttt{avrispmk2} firmware, the USBprog emulates a different device and so it needs a different
-driver. The documentation \cite{WinavrManual} helps here.
+driver. The installation of the driver is basically the same as the installation of the driver for
+the USBprog, which is described in section \vref{sec:driverinstallation_2k_xp} (Windows 2000 and
+XP) and section \vref{sec:driverinstallation_vista_7} (Windows Vista and 7), respectively.
+
+The only difference is that the location of the driver is 
+\texttt{c:\textbackslash{}WinAVR-\textit{YYYYMMTT}\textbackslash{}utils\textbackslash{}libusb\textbackslash{}bin}
+with \texttt{\textit{YYYYMMTT}} to be replaced with the version of AVRDUDE.
+
+\subsubsection{Connecting with the Device}
 
 If everything is fine and you started the \texttt{avrispmk2} firmware on your USBprog, connect it to
 a microcontroller circuit using the ISP interface and then you can test the hardware and the
@@ -1521,6 +1538,8 @@ Valid parts are:
   x32a4 = ATXMEGA32A4     [/opt/cross/etc/avrdude.conf:14737]
 ...
 \end{lstlisting}
+
+\subsubsection{Uploading a Firmware}
 
 To upload a program called \texttt{blink.hex}, just use
 
