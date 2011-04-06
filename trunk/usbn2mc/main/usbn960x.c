@@ -582,6 +582,7 @@ void _USBNGetDescriptor(DeviceRequest *req)
 {
   unsigned char index =  req->wValue;
   unsigned char type = req->wValue >> 8;
+//  unsigned char length =  req->wLength;
 
   EP0tx.Index = 0;
   EP0tx.DataPid = 1;
@@ -611,7 +612,7 @@ void _USBNGetDescriptor(DeviceRequest *req)
       #endif
 
       // send complete tree
-      EP0tx.Size =req->wLength;
+      EP0tx.Size =(unsigned short)req->wLength;
       EP0tx.Buf = (unsigned char*)&(FinalConfigurationArray[index][0]);
 
     break;
@@ -634,7 +635,9 @@ void _USBNGetDescriptor(DeviceRequest *req)
 	char lang[]={0x04,0x03,0x09,0x04};
 	//EP0tx.Buf = &FinalStringArray[0][0];
 	//EP0tx.Size = EP0tx.Buf[0];
-	EP0tx.Size=4;
+	if(req->wLength==1)
+	EP0tx.Size=1;
+	else EP0tx.Size=4;
 	EP0tx.Buf = (unsigned char*)lang;
 
       }
