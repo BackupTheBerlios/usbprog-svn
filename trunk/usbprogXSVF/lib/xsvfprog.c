@@ -60,8 +60,7 @@ struct xsvfprog* xsvfprog_open()
 
 void xsvfprog_close(struct xsvfprog *xsvfprog)
 {
-	usb_reset(xsvfprog->usb_handle);
-	//usb_close(xsvfprog->usb_handle);
+	usb_close(xsvfprog->usb_handle);
 	free(xsvfprog);
 }
 
@@ -76,7 +75,7 @@ int xsvfprog_message(struct xsvfprog *xsvfprog, char *msg, int msglen, char *ans
 		 * because they run internal device tests (see Xilinx XAPP503, XRUNTEST and other
 		 * instructions).
 		 */
-		res =  usb_bulk_read(xsvfprog->usb_handle,0x82, answer, answerlen, 20000);
+		res =  usb_bulk_read(xsvfprog->usb_handle,0x82, answer, answerlen, 60000);
 		return res;
 	} else {
 		return 0;
@@ -103,3 +102,16 @@ int xsvfprog_exec(struct xsvfprog *xsvfprog, char* buf, int size) {
 		return -1;
 	}
 }
+
+/* disable PE */
+int xsvfprog_prgend(struct xsvfprog *xsvfprog) {
+	char tmp[2];
+	tmp[0] = XSVF_PRGEND;
+	if(xsvfprog_message(xsvfprog, tmp, 1, tmp, 2) != -1) {
+		//printf("%02x %02x\n", (unsigned char) tmp[0], (unsigned char) tmp[1]);
+		return (unsigned char) tmp[0];
+	} else {
+		return -1;
+	}
+}
+

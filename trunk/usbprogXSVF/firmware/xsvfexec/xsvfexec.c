@@ -40,6 +40,7 @@
 #include "xsvf.h"
 #include "host.h"
 #include "tapsm.h"
+#include "avr/delay.h"
 
 /*!
  * \file xsvfexec.c
@@ -294,10 +295,12 @@ static int ReShift(int len, unsigned char *tdi_val, unsigned char *tdo_exp, unsi
                  * and wait for the specified number of microseconds.
                  */
                 if (delay) {
+                    PORTA ^= 0x10;
                     TapStateChange(RUN_TEST_IDLE);
-                    XsvfDelay(delay);
+                    //XsvfDelay(delay);
+                    XsvfClockCycles(delay);
                     /* In case of another retry, increase idle time by 25%. */
-                    delay += (delay >> 2);
+                    //delay += (delay >> 2);
                 }
             }
         } while (rc && retries--);

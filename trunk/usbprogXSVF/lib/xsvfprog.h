@@ -27,5 +27,7 @@ struct xsvfprog* xsvfprog_open();
 void xsvfprog_close(struct xsvfprog *xsvfprog);
 int xsvfprog_init(struct xsvfprog *xsvfprog);
 int xsvfprog_exec(struct xsvfprog *xsvfprog, char* buf, int size);
+int xsvfprog_prgend(struct xsvfprog *xsvfprog);
+
 
 #endif

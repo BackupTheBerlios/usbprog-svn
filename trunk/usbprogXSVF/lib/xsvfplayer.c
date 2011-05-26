@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-//#define DEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,6 +75,7 @@ void exit_err(char *msg) {
 #ifdef DEBUG
 	fclose(debugfile);
 #endif
+	xsvfprog_prgend(xsvfprog);
 	xsvfprog_close(xsvfprog);
 	exit(1);
 }
@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
 	}
 	if(SUCCESS != xsvfprog_init(xsvfprog)) {
 		printf("Initialization of XSVF player failed.\n");
+		xsvfprog_prgend(xsvfprog);
 		return 1;
 	}
 
@@ -136,11 +137,17 @@ int main(int argc, char *argv[]) {
 		case XENDDR:
 			/* these commands need one additional byte */
 			file2buf(1);
+#ifdef DEBUG
+			printf("par = %d, ", buf[1]);
+#endif
 			break;
 		
 		case XRUNTEST:
 			/* this command needs four additional bytes */
 			file2buf(4);
+#ifdef DEBUG
+			printf("delay = %d us, ", ntohl(*((long*) &buf[1])));
+#endif
 			break;
 		
 		case XTDOMASK:
@@ -233,7 +240,7 @@ int main(int argc, char *argv[]) {
 		
 		ret = xsvfprog_exec(xsvfprog, buf, bufsize);
 #ifdef DEBUG
-		//printf("%d\n", ret);
+		printf("%d\n", ret);
 #endif
 
 		switch(ret) {
@@ -276,6 +283,7 @@ int main(int argc, char *argv[]) {
 		printf("\rProgramming... %3u%%", 100*filepos/filesize);
 		fflush(stdout);
 	}
+	xsvfprog_prgend(xsvfprog);
 	printf("\nDone.\n");
 	
 	fclose(file);

@@ -364,7 +364,23 @@ int XsvfSkipComment(void)
  */
 void XsvfDelay(long usecs)
 {
-	wait_ms((usecs + 500U) / 1000U);
+	wait_ms((usecs + 999U) / 1000U);
+}
+
+/*!
+ * \brief Generate clock signal on TCK for specified cycle count.
+ *
+ * \param num Number of clock cycles to generate.
+ */
+void XsvfClockCycles(long num)
+{
+	while(num) {
+		CLR_TCK();
+		_delay_us(0.5);
+		num--;
+		SET_TCK();
+		_delay_us(0.5);
+	}
 }
 
 /*@}*/

@@ -103,6 +103,7 @@ extern int XsvfReadBitString(void *buf, int num);
 extern int XsvfSkipComment(void);
 
 extern void XsvfDelay(long usecs);
+extern void XsvfClockCycles(long num);
 
 /*@}*/
 

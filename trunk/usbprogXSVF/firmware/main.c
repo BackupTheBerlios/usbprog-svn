@@ -135,7 +135,7 @@ int main(void)
     _USBNAddStringDescriptor(lang); // language descriptor
 
     USBNDeviceManufacture ("USBprog EmbeddedProjects");
-    USBNDeviceProduct("usbprogXSVF Xilinx Programmer");
+    USBNDeviceProduct("usbprogXSVF     ");
     //USBNDeviceSerialNumber("GNU/GPL2");
 
     conf = USBNAddConfiguration();
@@ -154,6 +154,8 @@ int main(void)
     USBNStart();
     sei();
 	
+
+
     while(1);
 }
 
