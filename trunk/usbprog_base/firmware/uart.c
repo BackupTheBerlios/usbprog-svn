@@ -1,102 +1,391 @@
-#include <inttypes.h>
+/*
+ * Copyright (c) by Hartmut Birr
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. 
+ *
+ */
+
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #include "uart.h"
 
+#ifndef F_CPU
+#error Please define F_CPU
+#endif /* !F_CPU */
+
+//#define UART_BAUDRATE		9600
+//#define UART_BAUDRATE		38400
+//#define UART_BAUDRATE		57600
+//#define UART_BAUDRATE		115200
+#define UART_BAUDRATE		230400
+//#define UART_BAUDRATE		460800
+//#define UART_BAUDRATE     500000
+//#define UART_BAUDRATE		921600
+
+#define UART_U2X 
 
 
-void UARTInit(void)
+#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega32__)
+
+#define UART_UDR		UDR
+#define UART_UCSRA		UCSRA
+#define UART_UCSRB		UCSRB
+#define UART_UCSRC		UCSRC
+#define UART_UBRRH		UBRRH
+#define UART_UBRRL		UBRRL
+
+#define UART_PE			PE
+#define UART_DOR		DOR
+#define UART_FE			FE
+#define UART_UDRE		UDRE
+#define UART_TXC		TXC
+#define UART_RXC		RXC
+
+#define UART_TXEN		TXEN
+#define UART_RXEN		RXEN
+#define UART_UDRIE		UDRIE
+#define UART_TXCIE		TXCIE
+#define UART_RXCIE		RXCIE
+
+#define UART_RX_vect	USART_RXC_vect
+#define UART_TX_vect	USART_TXC_vect
+#define UART_UDRE_vect	USART_UDRE_vect
+
+#define UART_UCSRC_INIT	((1<<URSEL)|(1<<UCSZ1)|(1<<UCSZ0))
+
+#elif defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__)
+
+#define UART_UDR		UDR0
+#define UART_UCSRA		UCSR0A
+#define UART_UCSRB		UCSR0B
+#define UART_UCSRC		UCSR0C
+#define UART_UBRRH		UBRR0H
+#define UART_UBRRL		UBRR0L
+
+#define UART_PE			UPE0
+#define UART_DOR		DOR0
+#define UART_FE			FE0
+#define UART_UDRE		UDRE0
+#define UART_TXC		TXC0
+#define UART_RXC		RXC0
+
+#define UART_TXEN		TXEN0
+#define UART_RXEN		RXEN0
+#define UART_UDRIE		UDRIE0
+#define UART_TXCIE		TXCIE0
+#define UART_RXCIE		RXCIE0
+
+#define UART_UCSRC_INIT	((0<<UMSEL01)|(0<<UMSEL00)|(0<<UPM01)|(0<<UPM00)|(0<<USBS0)|(1<<UCSZ01)|(1<<UCSZ00)|(0<<UCPOL0))
+
+#define UART_RX_vect	USART_RX_vect
+#define UART_TX_vect	USART_TX_vect
+
+#else
+#error Please define your UART code
+#endif
+
+
+#ifndef UART_RX_BUFFER_SIZE
+#define UART_RX_BUFFER_SIZE 128
+#endif
+
+#ifndef UART_TX_BUFFER_SIZE
+#define UART_TX_BUFFER_SIZE 512
+#endif
+
+static uint8_t UartRxBuffer[UART_RX_BUFFER_SIZE];
+#if UART_RX_BUFFER_SIZE >= 256
+static volatile uint16_t UartRxCount;
+static volatile uint16_t UartRxCurrent;
+#else
+static volatile uint8_t UartRxCount;
+static volatile uint8_t UartRxCurrent;
+#endif
+
+static uint8_t UartTxBuffer[UART_TX_BUFFER_SIZE];
+#if UART_TX_BUFFER_SIZE >= 256
+static volatile uint16_t UartTxCount;
+static volatile uint16_t UartTxCurrent;
+#else
+static volatile uint8_t UartTxCount;
+static volatile uint8_t UartTxCurrent;
+#endif
+static volatile uint8_t UartStatus;
+
+void initUart(void)
 {
- 	
-	UCSRA = (1 << RXC) | (1 << TXC);
-  	//UCSRB = (1 << RXEN) | (1 << TXEN) | (1 << RXCIE);
-  	UCSRB = (1 << RXEN) | (1 << TXEN);
-  	UCSRC = (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0);
-	
-	//ATmega32 bei 16MHz und für 19200 Baud
-	// 4 mhz 9600 baud =25 
-  	UBRRH  = 0;                                   // Highbyte ist 0
-  	UBRRL  = 26;                                  // Lowbyte ist 51 ( dezimal )
-    // Flush Receive-Buffer
-  
-  	do
-  	{	
-		uint8_t dummy;
-      	(void) (dummy = UDR);
-  	}
-  	while (UCSRA & (1 << RXC));
+    uint8_t sreg = SREG;
+
+	/* disable interrupts during initialisation */
+	cli();
+
+	/* disable the UART */
+	UART_UCSRA = 0;
+	UART_UCSRB = 0;
+	UART_UCSRC = 0;
+
+
+	/* set the baudrate */
+#ifdef UART_U2X
+	UART_UBRRH =
+#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega32__)
+				 (1<<URSEL) | 
+#endif
+	                          (((F_CPU + 4 * UART_BAUDRATE) / 8 / UART_BAUDRATE - 1) / 256);
+	UART_UBRRL = ((F_CPU + 4 * UART_BAUDRATE) / 8 / UART_BAUDRATE - 1) % 256;
+	UART_UCSRA = (1<<U2X);
+#else
+	UART_UBRRH =
+#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega32__)
+				 (1<<URSEL) | 
+#endif
+ 							  (((F_CPU + 8 * UART_BAUDRATE) / 16 / UART_BAUDRATE - 1) / 256);
+	UART_UBRRL = ((F_CPU + 8 * UART_BAUDRATE) / 16 / UART_BAUDRATE - 1) % 256;
+#endif
+
+	/* set paity, stop bits and data length */
+	UART_UCSRC = UART_UCSRC_INIT;
+
+	resetUartRx();
+	resetUartTx();
+
+	/* restore the state of the interrupt */
+	SREG = sreg;
 }
 
-
-
-void UARTPutChar(unsigned char sign)
+void resetUartRx(void)
 {
-  	// bei neueren AVRs steht der Status in UCSRA/UCSR0A/UCSR1A, hier z.B. fuer ATmega16:
-  	while (!(UCSRA & (1<<UDRE))); /* warten bis Senden moeglich                   */
-  		UDR = sign;                    /* schreibt das Zeichen x auf die Schnittstelle */
+	uint8_t sreg = SREG;
+
+	cli();
+	UART_UCSRB &= ~((1<<UART_RXCIE)|(1<<UART_RXEN));
+
+
+	UartRxCount = 0;
+	UartRxCurrent = 0;
+
+	UartStatus &= ~(UART_RX_BUFFER_OVERFLOW|UART_PARITY_ERROR|UART_DATA_OVERRUN|UART_FRAME_ERROR);
+
+	UART_UCSRB |= (1<<UART_RXCIE)|(1<<UART_RXEN);
+	SREG = sreg;
 }
 
-
-unsigned char UARTGetChar(void)
+void resetUartTx(void)
 {
-  //while (!(UCSRA & (1<<RXC)));  // warten bis Zeichen verfuegbar
-  return UDR;                   // Zeichen aus UDR an Aufrufer zurueckgeben
+	uint8_t sreg = SREG;
+		
+	cli();
+
+	UART_UCSRB &= ~((1<<UART_UDRIE)|(1<<UART_TXEN));
+	UartTxCount = 0;
+	UartTxCurrent = 0;
+    UartStatus |= UART_TX_BUFFER_EMPTY;
+
+
+	UART_UCSRB |= (1<<UART_TXEN);
+
+	SREG = sreg;
 }
 
-void UARTWrite(char* msg)
+ISR(UART_RX_vect)
 {
-  	while(*msg != '\0')
-  	{
-     	UARTPutChar (*msg++);
-  	}
+	uint8_t ucsra;
+    
+	ucsra = UART_UCSRA;
+	UartRxBuffer[UartRxCurrent] = UART_UDR;
+	if (UartRxCurrent < UART_RX_BUFFER_SIZE - 1)
+	{
+		UartRxCurrent++;
+	}
+	else
+	{
+		UartRxCurrent = 0;
+	}
+	if (UartRxCount >= UART_RX_BUFFER_SIZE)
+	{
+		UartStatus |= UART_RX_BUFFER_OVERFLOW;
+	}
+	else
+	{
+		UartRxCount++;
+	}
+	if (ucsra & (1<<UART_DOR))
+	{
+		UartStatus |= UART_DATA_OVERRUN;
+	}
+	if (ucsra & (1<<UART_FE))
+	{
+		UartStatus |= UART_FRAME_ERROR;
+	}
+	if (ucsra & (1<<UART_PE))
+	{
+		UartStatus |= UART_PARITY_ERROR;
+	}
 }
 
-unsigned char AsciiToHex(unsigned char high,unsigned char low)
+uint8_t getUartRxData(uint8_t *buffer, uint8_t size)
 {
-  	unsigned char new;
+	uint8_t sreg;
+	uint8_t count = 0;
 
-  	// check if lower equal 9 ( assii 57 )
-  	if(high <= 57) // high is a number
-    	high = high -48;
-  	else // high is a letter
-    	high = high -87;
 
-  	high = high << 4;
-  	high = high & 0xF0;
- 
-  	// check if lower equal 9 ( assii 57 )
-  	if(low <= 57) // high is a number
-    	low = low -48;
-  	else // high is a letter
-    	low = low -87;
-  	
-	low = low & 0x0F;
- 
-  	new = high | low;
- 
-  	return new;
+    sreg = SREG;
+	cli();
+	while (UartRxCount > 0 && count < size)
+	{
+		if (UartRxCurrent >= UartRxCount)
+		{
+			*buffer = UartRxBuffer[UartRxCurrent - UartRxCount];
+		}
+		else
+		{
+			*buffer = UartRxBuffer[UART_RX_BUFFER_SIZE + UartRxCurrent - UartRxCount];
+		}
+		UartRxCount--;
+
+		SREG = sreg;
+
+		count++;
+		buffer++;
+
+		sreg = SREG;
+		cli();
+	}
+	SREG = sreg;
+
+	return count;
 }
 
-void SendHex(unsigned char hex)
+ISR(UART_UDRE_vect)
 {
-  	unsigned char high,low;
-  	// get highnibble
-  	high = hex & 0xF0;
-  	high = high >> 4;
- 
-  	// get lownibble
-  	low = hex & 0x0F;
- 
-  	if(high<=9)
-    	UARTPutChar(high+48);
-  	else
-    	UARTPutChar(high+87);
- 
- 
-  	if(low<=9)
-    	UARTPutChar(low+48);
-  	else
-    	UARTPutChar(low+87);
-
+    while (UART_UCSRA & (1<<UART_UDRE))	
+    {
+		if (UartTxCount == 0)
+		{
+			UART_UCSRB &= ~(1<<UART_UDRIE);
+            UartStatus |= UART_TX_BUFFER_EMPTY;
+			break;
+		}
+		else
+		{
+			UART_UDR = UartTxBuffer[UartTxCurrent];
+			if (UartTxCurrent < UART_TX_BUFFER_SIZE - 1)
+			{
+				UartTxCurrent++;
+			}
+			else
+			{
+				UartTxCurrent=0;
+			}
+			UartTxCount--;
+		}
+	}
 }
 
+uint8_t setUartTxData(uint8_t *buffer, uint8_t size, uint8_t wait)
+{
+
+	uint8_t count = 0;
+	uint8_t sreg;
+    uint8_t flag = 1;
+
+	while (count < size && (flag || wait))
+	{
+		sreg = SREG;
+		cli();
+
+        if (!(sreg & (1<<SREG_I)))
+        {
+            while((UART_UCSRA & (1<<UART_UDRE)) && UartTxCount)
+            {
+			    UART_UDR = UartTxBuffer[UartTxCurrent];
+			    if (UartTxCurrent < UART_TX_BUFFER_SIZE - 1)
+			    {
+				    UartTxCurrent++;
+			    }
+			    else
+			    {
+				    UartTxCurrent=0;
+			    }
+			    UartTxCount--;
+            }
+        }
+
+        if (UartTxCount < UART_TX_BUFFER_SIZE)
+        {
+			if (UartTxCurrent + UartTxCount >= UART_TX_BUFFER_SIZE)
+			{
+				UartTxBuffer[UartTxCurrent + UartTxCount - UART_TX_BUFFER_SIZE] = *buffer;
+			}
+			else
+			{
+				UartTxBuffer[UartTxCurrent + UartTxCount] = *buffer;
+			}
+		    UartTxCount++;
+            UartStatus &= ~UART_TX_BUFFER_EMPTY;
+			UART_UCSRB |= (1<<UART_UDRIE);
+            flag = 1;
+        }
+        else
+        {
+            flag = 0;
+        }
+    
+        SREG = sreg;
+
+        if (flag)
+        {
+		    buffer++;
+		    count++;
+        }
+	}
+	return count;
+}
+
+uint8_t getUartStatus(void)
+{
+	return UartStatus;
+}
+
+uint16_t getUartRxCount(void)
+{
+#if UART_RX_BUFFER_SIZE >= 256
+    uint16_t count;
+    uint8_t sreg = SREG;
+
+    cli();
+    count = UartRxCount;
+    SREG = sreg;
+    return count;
+#else
+	return UartRxCount;
+#endif
+}
+
+uint16_t getUartTxCount(void)
+{
+#if UART_TX_BUFFER_SIZE >= 256
+    uint16_t count;
+    uint8_t sreg = SREG;
+
+    cli();
+    count = UartTxCount;
+    SREG = sreg;
+    return count;
+#else
+	return UartTxCount;
+#endif
+}

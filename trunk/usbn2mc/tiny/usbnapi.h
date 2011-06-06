@@ -19,13 +19,33 @@
 #ifndef _USBNAPI_H
 #define _USBNAPI_H
 
+#include <stdlib.h>
+
 #include "usbn960x.h"
-#include "../usbn960xreg.h"
+#include "usbn2mc.h"
 
-/// initial global data structures
-void USBNInit(unsigned char *_DeviceDescriptor,unsigned char *_ConfigurationDescriptor);
+struct usb_configuration_descriptor_tab
+{
+    uint8_t NumberOfConfigurations;
+    struct usb_configuration_descriptor* Configurations[];
+};    
 
-void USBNCallbackFIFORX1(void *fct);
+struct usb_wstring_descriptor 
+{
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    wchar_t wString[];
+};
+
+struct usb_wstring_descriptor_tab
+{
+    uint8_t NumberOfStrings;
+    struct usb_wstring_descriptor* Strings[];
+};
+
+void USBNInit(struct usb_device_descriptor* _DeviceDescriptor, 
+              struct usb_configuration_descriptor_tab* _ConfigurationDescriptorTab, 
+              struct usb_wstring_descriptor_tab* _StringTab);
 
 /// start usb system after configuration
 void USBNStart(void);
@@ -33,14 +53,12 @@ void USBNStart(void);
 /// handle usb chip interrupt
 void USBNInterrupt(void);
 
-/// move descriptor in a linear field and remove string descriptors
-void _USBNCreateStringField(void);
+uint16_t USBNGetDescriptor(const uint16_t Value, void** const DescriptorAddress);
 
-uint8_t USBNAddToStringList( void* data);
+void USBNAddInEndpointCallback(uint8_t epnr, void (*fkt)(void));
+void USBNAddOutEndpointCallback(uint8_t epnr, void (*fkt)(void));
 
-
-/// add new string descriptor and get index
-int _USBNAddStringDescriptor(char *string);
-
+uint8_t USBNGetRxData(uint8_t ep, uint8_t *buffer, uint8_t size);
 
 #endif /* __USBNAPI_H__ */
+

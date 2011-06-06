@@ -70,6 +70,20 @@ struct usb_interface_descriptor {
   unsigned char   iInterface;
 };
 
+/*-------------------------------------------
+ * interface descriptor 
+ * ------------------------------------------*/
+
+struct usb_interface_association_descriptor {
+  unsigned char   bLength;
+  unsigned char   bDescriptorType;
+  unsigned char   bFirstInterface;
+  unsigned char   bInterfaceCount;
+  unsigned char   bFunctionClass;
+  unsigned char   bFunctionSubClass;
+  unsigned char   bFunctionProtocol;
+  unsigned char   iInterface;
+};
 
 /*-------------------------------------------
  * endpoint descriptor 

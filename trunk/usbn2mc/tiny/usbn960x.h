@@ -19,20 +19,52 @@
 #ifndef _USBN960X_H
 #define _USBN960X_H
 
-#define DEBUG 0
-
 #include "../usbn960xreg.h"
 #include "../usb11spec.h"
 
-unsigned char *DeviceDescriptor;
-unsigned char *ConfigurationDescriptor;
-struct string_entry*  StringList;
-char** FinalStringArray;
+struct _tx_ctrl
+{
+    uint8_t tx_fifo;
+    uint8_t txc;
+    uint8_t txs;
+    uint8_t txd;
+};
+
+struct _tx_info
+{
+    uint8_t FifoSize;
+    uint8_t* Buffer;
+    uint16_t BufferIndex;
+    uint16_t BufferSize;
+    void (*func)(void);
+    uint8_t DataPid       : 1;
+    uint8_t isPgmSpace    : 1;
+    uint8_t zeroLengthPkt : 1;
+};
+
+struct _rx_ctrl
+{
+    uint8_t rx_fifo;
+    uint8_t rxs;
+    uint8_t rxd;
+    uint8_t rxc;
+};
+
+struct _rx_info
+{
+    uint8_t FifoSize;
+    uint8_t* Buffer;
+    uint16_t BufferIndex;
+    uint16_t BufferSize;
+    void (*func)(void);
+};
 
 
 
-void *RX1Callback;
-
+extern struct _tx_ctrl tx_ctrl[4];
+extern struct _tx_info tx_info[4];
+extern struct _rx_ctrl rx_ctrl[4];
+extern struct _rx_info rx_info[4];
 
 
 struct list_entry
@@ -73,20 +105,8 @@ struct devicereq {
   unsigned short  wLength;
 };
 
-
-typedef struct epinfo EPInfo;
-struct epinfo {
-  unsigned char	  usbnData;
-  unsigned char	  usbnCommand;
-  unsigned char	  usbnControl;
-  unsigned char	  DataPid; // 0 = data0, 1 = data1
-  int		  usbnfifo;
-  int		  Index;
-  int		  Size;
-  unsigned char*  Buf;
-}; 
-
 unsigned char EP0RXBuf[8];
+
 
 
 // system functions
@@ -98,31 +118,25 @@ void _USBNAlternateEvent(void);
 
 
 /// usb default requests set address
+void _USBNSetAddress(DeviceRequest *req);
 void _USBNGetDescriptor(DeviceRequest *req);
 void _USBNSetConfiguration(DeviceRequest *req);
-void _USBNClearFeature(void);
+void _USBNGetStatus(DeviceRequest *req);
+void _USBNClearFeature(DeviceRequest *req);
+void _USBNSetFeature(DeviceRequest *req);
 
-void _USBNToggle(EPInfo* ep);
-void _USBNTransmit(EPInfo* ep);
-void _USBNReceive(EPInfo* ep);
+//void _USBNToggle(EPInfo* ep);
+void _USBNTransmit(uint8_t ep);
+void _USBNReceive(uint8_t ep);
 
 
 void _USBNTransmitFIFO0(void);
 void _USBNReceiveFIFO0(void);
 
-
-unsigned char USBNRead(unsigned char Adr);
-void USBNWrite(unsigned char Adr,unsigned char Data);
-
-
-void _USBNInitEP0(void);
-
-void USBNDebug(char *msg);
-
 //only for compiler
 void USBNDecodeVendorRequest(DeviceRequest *req);
-void USBNDecodeClassRequest(DeviceRequest *req,EPInfo* ep);
+void USBNDecodeClassRequest(DeviceRequest *req /*,EPInfo* ep*/);
 
-
+uint8_t _USBNGetRxData(uint8_t ep, uint8_t *buffer, uint8_t size);
 
 #endif /* __USBN960X_H__ */

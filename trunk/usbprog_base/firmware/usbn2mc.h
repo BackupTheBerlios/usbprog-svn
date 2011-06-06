@@ -24,8 +24,10 @@
 
 unsigned char USBNRead(unsigned char Adr);
 unsigned char USBNBurstRead(void);
+void USBNReadBlock(unsigned char Adr, unsigned char* Data, unsigned char size);
 void USBNWrite(unsigned char Adr,unsigned char Data);
-inline void USBNBurstWrite(unsigned char Data);
+void USBNWriteBlock(unsigned char Adr, unsigned char* Data, unsigned char size, uint8_t isPgmSpace);
+void USBNBurstWrite(unsigned char Data);
 
 void USBNInitMC(void);
 
@@ -63,6 +65,8 @@ void USBNDebug(char *msg);
 
 /// The pin address of the read strobe signal
 #define  PF_RD    0x10
+
+#define  PF_INT   (1<<PD2)
 
 //#define  PF_RESET    0x10
 

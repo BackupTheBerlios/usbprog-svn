@@ -19,22 +19,22 @@
 #define _MCIFACE_H_
 
 
-#include "../usbn2mc/main/usbnapi.h"
+#include "../usbn2mc/tiny/usbnapi.h"
 
 unsigned char USBNRead(unsigned char Adr);
-unsigned char USBNBurstRead(void);
+void USBNReadBlock(uint8_t Addr, uint8_t* Data, uint8_t Size);
 void USBNWrite(unsigned char Adr,unsigned char Data);
-inline void USBNBurstWrite(unsigned char Data);
+void USBNWriteBlock(uint8_t Addr, const uint8_t* Data, uint8_t Size, uint8_t isPgmSpace);
 
 void USBNInitMC(void);
 
 // print debug messages
 void USBNDebug(char *msg);
 
-void USBNInterfaceRequests(DeviceRequest *req,EPInfo* ep);
+//void USBNInterfaceRequests(DeviceRequest *req,EPInfo* ep);
 
-void USBNDecodeVendorRequest(DeviceRequest *req);
-void USBNDecodeClassRequest(DeviceRequest *req);
+//void USBNDecodeVendorRequest(DeviceRequest *req);
+//void USBNDecodeClassRequest(DeviceRequest *req);
 
 
 /// The Atmega register used to send data/address to the USBN9604
@@ -53,17 +53,17 @@ void USBNDecodeClassRequest(DeviceRequest *req);
 #define USB_CTRL_DDR		DDRD
 
 /// The pin address of the chip select signal
-#define  PF_CS    0x08
+#define  PF_CS    (1<<PD3)
 
 /// The pin address of the Address enable signal
-#define  PF_A0    0x40
+#define  PF_A0    (1<<PD6)
 
 /// The pin address of the write strobe signal
-#define  PF_WR    0x20
+#define  PF_WR    (1<<PD5)
 
 /// The pin address of the read strobe signal
-#define  PF_RD    0x10
+#define  PF_RD    (1<<PD4)
 
-//#define  PF_RESET    0x10
+#define  PF_INT   (1<<PD2)
 
 #endif /* _MCIFACE_H_ */

@@ -1,6 +1,6 @@
 #include "avrupdate.h"
 
-void (*avrupdate_jump_to_boot)( void ) = (void *) 0x7000;
+void (*avrupdate_jump_to_boot)( void ) = (void *)0x3800;
 
 //uint8_t ee_version EEMEM = 1;
 
@@ -14,4 +14,5 @@ void avrupdate_start(void)
 
   cli();    // disable all interrupts
   avrupdate_jump_to_boot();
+
 }

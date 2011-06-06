@@ -1,12 +1,14 @@
 #include <stdlib.h>
+#include <string.h>
 #include <avr/pgmspace.h>
 #include <avr/boot.h>
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
-#define F_CPU 16000000
 #include <util/delay.h>
 
+#include "../../usbn2mc/tiny/usbnapi.h"
 #include "usbn2mc.h"
+
 
 // Changes: Deleted all the UART stuff. it's just needed for debugging.
 
@@ -32,52 +34,105 @@ ISR (INT0_vect)
 #define STOPPROGMODE	0x05
 
 // USB device parameters
-const unsigned char avrupdateDevice[] = {
-  0x12,				// 18 length of device descriptor
-  0x01,				// descriptor type = device descriptor 
-  0x10, 0x01,			// version of usb spec. ( e.g. 1.1) 
-  0x00,				// device class
-  0x00,				// device subclass
-  0x00,				// protocol code
-  0x08,				// deep of ep0 fifo in byte (e.g. 8)
-  0x81, 0x17,			// vendor id
-  0x62, 0x0c,			// product id
-  0x00, 0x00,			// revision id (e.g 1.02)
-  0x01,				// index of manuf. string
-  0x02,				// index of product string
-  0x00,				// index of ser. number
-  0x01				// number of configs
+struct usb_device_descriptor PROGMEM avrupdateDevice = 
+{
+    .bLength = sizeof(struct usb_device_descriptor),
+    .bDescriptorType = DEVICE,
+    .bcdUSB = 0x0110,
+    .bDeviceClass = 0,
+    .bDeviceSubClass = 0,
+    .bDeviceProtocol = 0,
+    .bMaxPacketSize0 = 8,
+    .idVendor = 0x1781,
+    .idProduct = 0x0c62,
+    .bcdDevice = 0x0000,
+    .iManufacturer = 1,
+    .iProduct = 2,
+    .iSerialNumber = 0,
+    .bNumConfigurations = 1
 };
 
-// configuration descriptor          
-const unsigned char avrupdateConf[] = {
-  0x09,				// 9 length of this descriptor
-  0x02,				// descriptor type = configuration descriptor 
-  0x19, 0x00,			// total length with first interface ... 
-  0x01,				// number of interfaces
-  0x01,				// number if this config. ( arg for setconfig)
-  0x00,				// string index for config
-  0xA0,				// attrib for this configuration ( bus powerded, remote wakup support)
-  0x1A,				// power for this configuration in mA (e.g. 50mA)
+// configuration descriptor
+struct
+{
+    struct usb_configuration_descriptor Config;
+    struct usb_interface_descriptor Interface;
+    struct usb_endpoint_descriptor DataOutEndpoint;
+} PROGMEM avrupdateConf = 
+{
+    .Config =
+    {
+        .bLength = sizeof(struct usb_configuration_descriptor),
+        .bDescriptorType = CONFIGURATION,
+        .wTotalLength = sizeof(avrupdateConf),
+        .bNumInterfaces = 1,
+        .bConfigurationValue = 1,
+        .iConfiguration = 0,
+        .bmAttributes = 0xA0,   // bus powerded, remote wakup support
+        .MaxPower = 0x1a,       // 25mA
+    },
+    .Interface = 
+    {
+        .bLength = sizeof(struct usb_interface_descriptor),
+        .bDescriptorType = INTERFACE,
+        .bInterfaceNumber = 0,
+        .bAlternateSetting = 0,
+        .bNumEndpoints = 1,
+        .bInterfaceClass = 0,
+        .bInterfaceSubClass = 0,
+        .bInterfaceProtocol = 0,
+        .iInterface = 0,
+    },
+    .DataOutEndpoint = 
+    {
+        .bLength = sizeof(struct usb_endpoint_descriptor),
+        .bDescriptorType = ENDPOINT,
+        .bEndpointAddress = 0x02,
+        .bmAttributes = 0x02,   // bulk
+        .wMaxPacketSize = 64,
+        .bIntervall = 0,
+    }
+};
 
-//InterfaceDescriptor
-  0x09,				// 9 length of this descriptor
-  0x04,				// descriptor type = interface descriptor 
-  0x00,				// interface number 
-  0x00,				// alternate setting for this interface 
-  0x01,				// number endpoints without 0
-  0x00,				// class code 
-  0x00,				// sub-class code 
-  0x00,				// protocoll code
-  0x00,				// string index for interface
+struct usb_configuration_descriptor_tab PROGMEM avrupdateConfTab =
+{
+    .NumberOfConfigurations = 1,
+    .Configurations = 
+    {
+        (struct usb_configuration_descriptor*)&avrupdateConf
+    }
+};   
 
-//EP2 Descriptor
-  0x07,				// length of ep descriptor
-  0x05,				// descriptor type= endpoint
-  0x02,				// endpoint address (e.g. out ep2)
-  0x02,				// transfer art ( bulk )
-  0x40, 0x00,			// fifo size
-  0x00				// polling intervall in ms
+struct usb_wstring_descriptor avrupdateStrLanguage PROGMEM = 
+{
+    .bLength = 4,
+    .bDescriptorType = STRING,
+    .wString = {0x0409}
+};
+
+struct usb_wstring_descriptor avrupdateStrManufacturer PROGMEM = 
+{
+    .bLength = sizeof(L"USBprog EmbeddedProjects"), 
+    .bDescriptorType = STRING,
+    .wString = L"USBprog EmbeddedProjects",
+};
+
+struct usb_wstring_descriptor PROGMEM avrupdateStrProduct = 
+{
+    .bLength = sizeof(L"usbprogBase Mode"),
+    .bDescriptorType = STRING,
+    .wString = L"usbprogBase Mode"
+};
+
+struct usb_wstring_descriptor_tab PROGMEM StringTab =
+{
+    .NumberOfStrings = 3,
+    .Strings =
+    {
+        (struct usb_wstring_descriptor*)&avrupdateStrLanguage,
+        (struct usb_wstring_descriptor*)&avrupdateStrManufacturer,
+        (struct usb_wstring_descriptor*)&avrupdateStrProduct
+    }
 };
 
 uint16_t page_addr;
@@ -94,7 +149,7 @@ USBNDecodeVendorRequest (DeviceRequest * req)
 }
 
 void
-USBNDecodeClassRequest (DeviceRequest * req, EPInfo * ep)
+USBNDecodeClassRequest (DeviceRequest * req/*, EPInfo * ep*/)
 {
 }
 
@@ -168,11 +223,14 @@ avrupdate_program_page (uint32_t page)
 
 /* called when Data was received via USB*/
 void
-avrupdate_cmd (char *buf)
+avrupdate_cmd (void)
 {
-  uint8_t sreg = SREG;
-  cli ();			// disable Interrupts
-  uint8_t i;
+    uint8_t buf[64];
+    uint8_t size;
+    uint8_t sreg = SREG;
+    cli ();			// disable Interrupts
+
+    size = USBNGetRxData(1, buf, 64);
 
   // check state 
   if (state == WRITEPAGE)
@@ -190,13 +248,13 @@ avrupdate_cmd (char *buf)
 	  else
 	    page_addr_w = (page_addr - 1) / 2;
 
-	  for (i = 0; i < 64; i++)
-	    {
-	      pageblock[i + 64] = buf[i];
-	    }
+        memcpy(pageblock + 64, buf, size);
+        if (size < 64)
+          memset(pageblock + 64 + size, 0xff, 64 - size);
 
 	  // write page
-	  avrupdate_program_page (page_addr_w);
+      if (page_addr_w + SPM_PAGESIZE / 2 <= 0x7000)
+	    avrupdate_program_page (page_addr_w);
 	  state = NONE;
 	}
       else
@@ -204,8 +262,9 @@ avrupdate_cmd (char *buf)
 	  collect128 = 1;
 	  //UARTWrite("even\r\n");
 	  // get first package 
-	  for (i = 0; i < 64; i++)
-	    pageblock[i] = buf[i];
+      memcpy(pageblock, buf, size);
+      if (size < 64)
+        memset(pageblock + size, 0xff, 64 - size);
 
 	  state = NONE;
 	}
@@ -248,7 +307,7 @@ avrupdate_cmd (char *buf)
 	  // section is not used (bootloader could be restarted)
 	}
     }
-  sei ();			// enable Interrupts again
+    SREG = sreg;	// enable Interrupts again
 }
 
 /* main program */
@@ -312,18 +371,18 @@ start_update_mode:
   collect128 = 0;		// state of received data: one page of flashmemory has 128Bytes
   // 64bytes have to be send in two steps via USB
 
-  // Init USB [usbn2mc.h]
-  USBNInit (avrupdateDevice, avrupdateConf);
-  USBNCallbackFIFORX1 (&avrupdate_cmd);	// avrupdate_cmd is called yb interrupt when Data has been received
-  _USBNAddStringDescriptor ("");	//pseudo lang
-  _USBNAddStringDescriptor ("USBprog EmbeddedProjects");
-  _USBNAddStringDescriptor ("usbprogBase Mode");
-  _USBNCreateStringField ();
+    // Init USB [usbn2mc.h]
+    USBNInit((struct usb_device_descriptor*)&avrupdateDevice, 
+             (struct usb_configuration_descriptor_tab*)&avrupdateConfTab,
+             (struct usb_wstring_descriptor_tab*)&StringTab);
+
+    USBNAddOutEndpointCallback(1, avrupdate_cmd);
 
   cli ();			//reset "Global Interrupt enable" [interrupt.h]
   GICR = _BV (IVCE);		//IVCE = 1, necessary to change Interrupt Vector, disables Interrupts
   GICR = _BV (IVSEL);		//IVSEL = 1, place Interrupt Vector at beginning of boot loader section
   sei ();			//set "Global Interrupt enable" [interrupt.h]
+
 
   USBNInitMC ();
   USBNStart ();			// start usb chip
@@ -332,6 +391,7 @@ start_update_mode:
   // endless loop
   while (1)
     {
+#if 1
       PORTA |= (1 << PA4);	// red LED: on-off-on-off--------
       wait_ms (100);
       PORTA &= ~(1 << PA4);
@@ -340,6 +400,7 @@ start_update_mode:
       wait_ms (100);
       PORTA &= ~(1 << PA4);
       wait_ms (800);
+#endif
     }
 
 wrong_jumper_setting:

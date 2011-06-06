@@ -189,5 +189,12 @@
 #define SETUP_R    0x40                 /*setup packet received   */  
 #define RX_ERR     0x80                 /*last packet had an error*/   
 
-
+/*------------------------------- WKUP ---------------------------*/
+#define PNDUSB     0x01
+#define PNDUC      0x02
+#define ENUSB      0x04
+#define ENUC       0x08
+#define WKMODE     0x20
+#define HOS        0x40
+#define FHT        0x80
 
