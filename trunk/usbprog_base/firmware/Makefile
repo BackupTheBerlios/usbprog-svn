@@ -51,7 +51,10 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c usbn2mc/tiny/usbn960x.c usbn2mc.c usbn2mc/tiny/usbnapi.c uart.c
+#SRC = $(TARGET).c usbn2mc/tiny/usbn960x.c usbn2mc.c usbn2mc/tiny/usbnapi.c uart.c
+#
+#SRC = $(TARGET).c ../usbn2mc/tiny/usbn960x.c usbn2mc.c ../usbn2mc/tiny/usbnapi.c ../usbn2mc/fifo.c ../usbprog_base/firmwarelib/avrupdate.c wait.c debug.c uart.c
+SRC = $(TARGET).c ../../usbn2mc/tiny/usbn960x.c usbn2mc.c ../../usbn2mc/tiny/usbnapi.c
 
 
 # List Assembler source files here.
@@ -111,7 +114,9 @@ CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -Wa,-adhlns=$(<:.c=.lst)
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
-CFLAGS += -DF_OSC=$(F_OSC)
+CFLAGS += -DF_OSC=$(F_OSC) 
+CFLAGS += -DF_CPU=$(F_OSC) -DBOOTLDR 
+ 
 
 
 
@@ -177,10 +182,10 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 # Type: avrdude -c ?
 # to get a full listing.
 #
-AVRDUDE_PROGRAMMER = stk500
+AVRDUDE_PROGRAMMER = avrisp2
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = com1    # programmer connected to serial device
+AVRDUDE_PORT = usb    # programmer connected to serial device
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
